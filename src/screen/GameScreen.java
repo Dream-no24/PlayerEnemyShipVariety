@@ -1,6 +1,5 @@
 package screen;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
@@ -347,9 +346,6 @@ public class GameScreen extends Screen {
 				for (EnemyShip enemyShip : this.enemyShipFormation)
 					if (!enemyShip.isDestroyed()
 							&& checkCollision(bullet, enemyShip)) {
-						//Drop item when MAGENTA color enemy destroyed
-						if(enemyShip.getColor() == Color.MAGENTA){
-							this.itemManager.dropItem(enemyShip,1,1);}
 						this.enemyShipFormation._destroy(enemyShip);
 						if(enemyShip.getHp() <= 0) {
 							this.score += enemyShip.getPointValue();
@@ -363,7 +359,8 @@ public class GameScreen extends Screen {
 							recyclable.add(bullet);
 						}
 
-
+						// Drop item to 30%
+						this.itemManager.dropItem(enemyShip,0.3,1);
 					}
 				if (this.enemyShipSpecial != null
 						&& !this.enemyShipSpecial.isDestroyed()
