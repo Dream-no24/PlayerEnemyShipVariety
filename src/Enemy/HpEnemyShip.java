@@ -63,7 +63,8 @@ public class HpEnemyShip {
         if (hp <= 0) {
             enemyShip.destroy();
         }
-        enemyShip.setColor(determineColor(hp));
+        if(!enemyShip.getColor().equals(Color.magenta))
+            enemyShip.setColor(determineColor(hp));
     }
 
 
