@@ -11,17 +11,8 @@ public final class ItemPool {
     public static Item getItem(final int positionX,
                                  final int positionY, final int speed, final int type) {
         Item item;
-        if (!pool.isEmpty()) {
-            item = pool.iterator().next();
-            pool.remove(item);
-            item.setPositionX(positionX - item.getWidth() / 2);
-            item.setPositionY(positionY);
-            item.setSpeed(speed);
-            item.setSprite();
-        } else {
-            item = new Item(positionX, positionY, speed, type);
-            item.setPositionX(positionX - item.getWidth() / 2);
-        }
+        item = new Item(positionX, positionY, speed, type);
+        item.setPositionX(positionX - item.getWidth() / 2);
         return item;
     }
 

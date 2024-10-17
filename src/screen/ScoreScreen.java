@@ -12,6 +12,8 @@ import engine.Cooldown;
 import engine.Core;
 import engine.GameState;
 import engine.Score;
+import Enemy.PlayerGrowth;
+import inventory_develop.NumberOfBullet;
 
 /**
  * Implements the score screen.
@@ -50,8 +52,8 @@ public class ScoreScreen extends Screen {
 	private int nameCharSelected;
 	/** Time between changes in user selection. */
 	private Cooldown selectionCooldown;
-	/** Total currency earned this game */
-	private int currency; // Team-Ctrl-S(Currency)
+	/** Total coin earned this game */
+	private int coin; // Team-Ctrl-S(Currency)
 	/** User's Final Reached Level */ //Team Clove
 	private int level;
 
@@ -65,6 +67,12 @@ public class ScoreScreen extends Screen {
 	private long playTime; //Team Clove
 
 	private GameState gameState; // Team-Ctrl-S(Currency)
+
+	private boolean isGameClear; // CtrlS
+
+	private PlayerGrowth growth = new PlayerGrowth();
+	private NumberOfBullet numberOfBullet = new NumberOfBullet();
+
 
 	/**
 	 * Constructor, establishes the properties of the screen.
@@ -91,10 +99,11 @@ public class ScoreScreen extends Screen {
 		this.nameCharSelected = 0;
 		this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
 		this.selectionCooldown.reset();
-		this.currency = gameState.getCurrency(); // Team-Ctrl-S(Currency)
+		this.coin = gameState.getCoin(); // Team-Ctrl-S(Currency)
 		this.gameState = gameState; // Team-Ctrl-S(Currency)
 		this.level = gameState.getLevel(); //Team Clove
 		this.statistics = new Statistics(); //Team Clove
+		this.isGameClear = this.livesRemaining > 0 && this.level > 7; // CtrlS
 
 		try {
 			this.highScores = Core.getFileManager().loadHighScores();
@@ -139,7 +148,10 @@ public class ScoreScreen extends Screen {
 				if (this.isNewRecord) {
 					saveScore();
 				}
-				saveCurrency(); // Team-Ctrl-S(Currency)
+				if (this.isGameClear) {
+					saveGem();
+				} // CtrlS
+				saveCoin(); // Team-Ctrl-S(Currency)
 				saveStatistics(); //Team Clove
 				saveRecentScore(); // Team Clove
 			} else if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
@@ -149,7 +161,10 @@ public class ScoreScreen extends Screen {
 				if (this.isNewRecord) {
 					saveScore();
 				}
-				saveCurrency(); // Team-Ctrl-S(Currency)
+				if (this.isGameClear) {
+					saveGem();
+				} // CtrlS
+				saveCoin(); // Team-Ctrl-S(Currency)
 				saveStatistics(); //Team Clove
 				saveRecentScore(); // Team Clove
 			}
@@ -180,6 +195,8 @@ public class ScoreScreen extends Screen {
 					this.selectionCooldown.reset();
 				}
 			}
+			numberOfBullet.ResetPierceLevel();
+			growth.ResetBulletSpeed();
 		}
 	}
 
@@ -228,17 +245,30 @@ public class ScoreScreen extends Screen {
 	}
 
 	/**
-	 * Saves the currency into currency file
+	 * Saves the coin into currency file
 	 */
 	// Team-Ctrl-S(Currency)
-	private void saveCurrency() {
+	private void saveCoin() {
 		try {
-			Core.getCurrencyManager().addCurrency(currency);
-			logger.info("You eared $" + currency);
+			Core.getCurrencyManager().addCoin(coin);
+			logger.info("You earned $" + coin);
 		} catch (IOException e) {
-			logger.warning("Couldn't load currency!");
+			logger.warning("Couldn't load coin!");
         }
     }
+
+	/**
+	 * Saves the gem into currency file
+	 */
+	// CtrlS
+	private void saveGem() {
+		try {
+			Core.getCurrencyManager().addGem(1);
+			logger.info("You earned 1 Gem for Game Clear");
+		} catch (IOException e) {
+			logger.warning("Couldn't load gem!");
+		}
+	}
 
 	/**
 	 * Draws the elements associated with the screen.
@@ -246,10 +276,10 @@ public class ScoreScreen extends Screen {
 	private void draw() {
 		drawManager.initDrawing(this);
 
-		drawManager.drawGameOver(this, this.inputDelay.checkFinished(),
-				this.isNewRecord);
+		drawManager.drawGameEnd(this, this.inputDelay.checkFinished(),
+				this.isNewRecord, this.isGameClear); // CtrlS
 		drawManager.drawResults(this, this.score, this.livesRemaining,
-				this.shipsDestroyed, (float) this.shipsDestroyed
+				this.shipsDestroyed, (float) this.gameState.getHitCount()
 						/ this.bulletsShot, this.isNewRecord, this.gameState);
 
 		if (this.isNewRecord)

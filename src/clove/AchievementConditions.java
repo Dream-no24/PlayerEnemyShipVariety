@@ -1,17 +1,19 @@
 package clove;
 
+import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import engine.Core;
 import engine.DrawManager;
 import engine.GameState;
-import clove.Statistics;
 import HUDTeam.DrawAchievementHud;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 
@@ -21,6 +23,9 @@ public class AchievementConditions {
 
     private GameState gameState;
     private static Logger logger;
+
+    private static int killCount;
+    private PropertyChangeSupport support;
 
     private int highestLevel;
     private int totalBulletsShot;
@@ -34,14 +39,12 @@ public class AchievementConditions {
     private List<Achievement> killAchievements = new ArrayList<>();
     private List<Achievement> trialAchievements = new ArrayList<>();
     private List<Achievement> streakAchievements = new ArrayList<>();
-    private List<Achievement> fastKillAchievements = new ArrayList<>();
+    private List<Achievement> accuracyAchievements = new ArrayList<>();
     private List<Achievement> noDeathAchievements = new ArrayList<>();
     private List<Achievement> stageAchievements = new ArrayList<>();
     private List<Achievement> scoreAchievements = new ArrayList<>();
     private List<Achievement> allAchievements = new ArrayList<>();
     private List<String> unlockedAchievements = new ArrayList<>();
-
-    private static final int FAST_KILL_TIME = 5;
 
     public AchievementConditions() {
         initializeAchievements();
@@ -54,7 +57,6 @@ public class AchievementConditions {
         }
 
         scheduler = Executors.newSingleThreadScheduledExecutor();
-        startFastKillCheck();
     }
 
     private void setStatistics() throws IOException {
@@ -63,24 +65,6 @@ public class AchievementConditions {
 
     private int enemiesKilledIn3Seconds = 0;
 
-    public void startFastKillCheck() {
-        scheduler.scheduleAtFixedRate(() -> {
-            try {
-                if (enemiesKilledIn3Seconds > 0) {
-                    fastKill(enemiesKilledIn3Seconds);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }, 0, 1, TimeUnit.SECONDS);
-    }
-
-    public void stopFastKillCheck() {
-        if (scheduler != null && !scheduler.isShutdown()) {
-            scheduler.shutdown();
-        }
-    }
-
     public AchievementConditions(DrawManager drawManager) {
         this.drawManager = drawManager;
         initializeAchievements();
@@ -88,36 +72,34 @@ public class AchievementConditions {
 
     public void initializeAchievements() {
 
-        // TODO Some of the codes below are non-operational.(fastKillAchievement,trialAchievement) Will be updated if related record fuctions are added.
         noDeathAchievements.add(new Achievement("Aerobatics","Maintain Maximum Life",3, Achievement.AchievementType.LIVES));
 
         killAchievements.add(new Achievement("Rookie Pilot", "Destroy 25 enemies", 25, Achievement.AchievementType.KILLS));
-        killAchievements.add(new Achievement("Space Hunter", "Destroy 50 enemies", 100, Achievement.AchievementType.KILLS));
-        killAchievements.add(new Achievement("Space Trooper", "Destroy 100 enemies", 250, Achievement.AchievementType.KILLS));
-        killAchievements.add(new Achievement("Guardian of Universe", "Destroy 200 enemies", 500, Achievement.AchievementType.KILLS));
+        killAchievements.add(new Achievement("Space Hunter", "Destroy 100 enemies", 100, Achievement.AchievementType.KILLS));
+        killAchievements.add(new Achievement("Space Trooper", "Destroy 250 enemies", 250, Achievement.AchievementType.KILLS));
+        killAchievements.add(new Achievement("Guardian of Universe", "Destroy 500 enemies", 500, Achievement.AchievementType.KILLS));
 
         trialAchievements.add(new Achievement("Welcome Recruit", "Finished first game", 1, Achievement.AchievementType.TRIALS));
-        trialAchievements.add(new Achievement("Skilled Solider", "Finished 10th game", 10, Achievement.AchievementType.TRIALS));
+        trialAchievements.add(new Achievement("Skilled Solider", "Finished 20th game", 20, Achievement.AchievementType.TRIALS));
         trialAchievements.add(new Achievement("Veteran Pilot", "Finished 50th game", 50, Achievement.AchievementType.TRIALS));
 
-        streakAchievements.add(new Achievement("Preheating", "Kill streak of 10", 10, Achievement.AchievementType.KILLSTREAKS));
-        streakAchievements.add(new Achievement("Overheating", "Kill streak of 30", 30, Achievement.AchievementType.KILLSTREAKS));
-        streakAchievements.add(new Achievement("Runaway","Kill streak of 60", 60, Achievement.AchievementType.KILLSTREAKS));
+        accuracyAchievements.add(new Achievement("Gunsliger", "Accuracy of 60%", 60, Achievement.AchievementType.ACCURACY));
+        accuracyAchievements.add(new Achievement("Fear the Enemy", "Accuracy of 75%", 75, Achievement.AchievementType.ACCURACY));
+        accuracyAchievements.add(new Achievement("Genocide", "Accuracy of 85%", 85, Achievement.AchievementType.ACCURACY));
 
-        fastKillAchievements.add(new Achievement("Gunsliger","Kill 3 enemies 5 seconds", 3, Achievement.AchievementType.FASTKILL));
-        fastKillAchievements.add(new Achievement("Fear the Enemy","Kill 5 enemies 5 seconds", 5, Achievement.AchievementType.FASTKILL));
-        fastKillAchievements.add(new Achievement("Genocide","Kill 15 enemies 5 seconds", 15, Achievement.AchievementType.FASTKILL));
+        streakAchievements.add(new Achievement("Preheating", "Kill streak of 3", 3, Achievement.AchievementType.KILLSTREAKS));
+        streakAchievements.add(new Achievement("Overheating", "Kill streak of 5", 5, Achievement.AchievementType.KILLSTREAKS));
+        streakAchievements.add(new Achievement("Runaway","Kill streak of 7", 7, Achievement.AchievementType.KILLSTREAKS));
 
-        scoreAchievements.add(new Achievement("First Milestone", "Reach 1,000 points", 6000, Achievement.AchievementType.SCORE));
-        scoreAchievements.add(new Achievement("Score Hunter", "Reach 5,000 points", 15000, Achievement.AchievementType.SCORE));
-        scoreAchievements.add(new Achievement("Score Master", "Reach 10,000 points", 30000, Achievement.AchievementType.SCORE));
+        scoreAchievements.add(new Achievement("First Milestone", "Reach 6,000 points", 6000, Achievement.AchievementType.SCORE));
+        scoreAchievements.add(new Achievement("Score Hunter", "Reach 15,000 points", 15000, Achievement.AchievementType.SCORE));
+        scoreAchievements.add(new Achievement("Score Master", "Reach 30,000 points", 30000, Achievement.AchievementType.SCORE));
 
-        stageAchievements.add(new Achievement("Home Sweet Home","Cleared Final Stage", Core.NUM_LEVELS, Achievement.AchievementType.STAGE));
+        stageAchievements.add(new Achievement("Home Sweet Home","Cleared Final Stage", Core.NUM_LEVELS-1, Achievement.AchievementType.STAGE));
 
         allAchievements.addAll(killAchievements);
         allAchievements.addAll(trialAchievements);
         allAchievements.addAll(streakAchievements);
-        allAchievements.addAll(fastKillAchievements);
         allAchievements.addAll(noDeathAchievements);
         allAchievements.addAll(stageAchievements);
         allAchievements.addAll(scoreAchievements);
@@ -177,35 +159,12 @@ public class AchievementConditions {
             enemiesKilledIn3Seconds = 0;
         }
     }
-    // TODO Not functioning well
-    public void fastKill(int killCount) throws IOException {
-        long currentTime = System.currentTimeMillis();
-
-        if (currentTime - lastKillTime <= TIME_LIMIT) {
-            resetKillCountIfNeeded();
-        } else {
-            enemiesKilledIn3Seconds = 0;
-        }
-        lastKillTime = currentTime;
-
-        if (enemiesKilledIn3Seconds > 0) {
-            //System.out.println("Kills in last 3 seconds: " + enemiesKilledIn3Seconds);
-        }
-        if (enemiesKilledIn3Seconds >= Achievement.getRequiredFastKills()) {
-            System.out.println("Checking fastkill achievements. Current fastkills: " + killCount);
-            for (Achievement achievement : fastKillAchievements) {
-                if (!achievement.isCompleted()) {
-                    completeAchievement(achievement);
-                }
-            }
-        }
-    }
 
     public void checkNoDeathAchievements(int lives) {
         System.out.println("Checking No Death achievements. Current lives: " + lives);
         if (lives == Core.MAX_LIVES) {
             for (Achievement achievement : noDeathAchievements) {
-                if (highestLevel==7 && !achievement.isCompleted()) {
+                if (highestLevel==Core.NUM_LEVELS-1 && !achievement.isCompleted()) {
                     completeAchievement(achievement);
                 }
             }
@@ -221,14 +180,40 @@ public class AchievementConditions {
             }
     }
 
-    // TODO function getShipsDestructionStreak not added yet
-    public void killStreak() throws IOException {
-        int shipsDestructionStreak = stats.getShipsDestructionStreak();
-        System.out.println("Checking killstreak achievements. Current killstreaks: " + shipsDestructionStreak);
-        System.out.println("Killstreak Achievements size: " + streakAchievements.size());
+    public void accuracy(int bulletsShot, int hitCount) throws IOException {
+        float accuracy = ((float) hitCount/ (float) bulletsShot) * 100;
+        System.out.println("Checking accuracy achievements. Checking accuracy: " + accuracy);
+        for (Achievement achievement : accuracyAchievements) {
+            System.out.println("Checking " + achievement.getAchievementName());
+            if (accuracy >= achievement.getRequiredAccuracy() && !achievement.isCompleted()) {
+                completeAchievement(achievement);
+            }
+        }
+    }
+
+    public void killStreakSystem() {
+        this.killCount = 0;
+    }
+
+    public static void incrementKillCount() {
+        killCount++;
+        System.out.println("Kill count incremented: " + killCount);
+    }
+
+    public static void resetKillCount() {
+        killCount = 0;
+        System.out.println("Kill count reset.");
+    }
+
+
+    public int getKillCount() {
+        return killCount;
+    }
+
+    public void killStreak(int count) throws IOException {
         for (Achievement achievement : streakAchievements) {
             System.out.println("Checking " + achievement.getAchievementName());
-            if (shipsDestructionStreak>= achievement.getRequiredKillStreaks() && !achievement.isCompleted()) {
+            if (killCount >= achievement.getRequiredKillStreaks() && !achievement.isCompleted()) {
                 completeAchievement(achievement);
             }
         }
@@ -243,10 +228,6 @@ public class AchievementConditions {
             }
         }
     }
-
-    /*
-    // TODO Achievements to add : Hidden Achievements
-    */
 
     private void completeAchievement(Achievement achievement) {
         if (!unlockedAchievements.contains(achievement.getAchievementName())) {

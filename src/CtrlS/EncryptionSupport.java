@@ -1,45 +1,38 @@
 package CtrlS;
 
-
-
+/**
+ * Class that Support encryption and decryption.
+ */
+// Team-Ctrl-S(Currency)
 public class EncryptionSupport {
 
-    private static final char[] numCode =	// 0 1 2 3 4 5 6 7 8 9
-            {'q','w','e','r','t','y','u','i','o','p'};
+    private static final String key = "randomkey";
 
-    public static String encrypt(String str) {
-
-        String secret = "";
-        for (int i = 0; i < str.length(); i++) {
-
-            char c = (char) str.charAt(i);
-            int chNum = (int) c;
-            chNum = chNum - 48;
-            secret += numCode[chNum];
-
+    /**
+     * Performs encryption for a given input.
+     */
+    // Team-Ctrl-S(Currency)
+    public static String encrypt(String input) {
+        byte[] bytes = input.getBytes();
+        byte[] keyBytes = key.getBytes();
+        byte[] encryptedBytes = new byte[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            encryptedBytes[i] = (byte) (bytes[i] ^ keyBytes[i % keyBytes.length]);
         }
-        return secret;
+        return new String(encryptedBytes);
     }
 
-
-    public static String decrypt(String str) {
-
-        String original = "";
-        for (int i = 0; i < str.length(); i++) {
-            char c = (char) str.charAt(i);
-            int chNum = (int) c;
-            int index = 0;
-            for (int j = 0; j < numCode.length; j++) {
-
-                if (chNum == (int) numCode[j]) {
-                    index = j;
-                    break;
-                }
-            }
-
-            index = index + 48;
-            original += (char) index;
+    /**
+     * Performs decryption for a given input.
+     */
+    // Team-Ctrl-S(Currency)
+    public static String decrypt(String encrypted) {
+        byte[] encryptedBytes = encrypted.getBytes();
+        byte[] keyBytes = key.getBytes();
+        byte[] decryptedBytes = new byte[encryptedBytes.length];
+        for (int i = 0; i < encryptedBytes.length; i++) {
+            decryptedBytes[i] = (byte) (encryptedBytes[i] ^ keyBytes[i % keyBytes.length]);
         }
-        return original;
+        return new String(decryptedBytes);
     }
 }

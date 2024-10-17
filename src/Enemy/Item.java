@@ -22,6 +22,7 @@ public class Item extends Entity {
         double PierceP = shipStatus.getPierce_probability();
         double ShieldP = shipStatus.getShield_probability();
         double HearthP = shipStatus.getHearth_probability();
+        double FeverP = shipStatus.getFeverTimeProbability();
 
         // Import odds from properties file for easy balance patches
         if (rdItem < bombP) { // 30%
@@ -36,6 +37,9 @@ public class Item extends Entity {
         } else if (rdItem < bombP + PierceP + ShieldP + HearthP) { // 100%
             this.spriteType = SpriteType.ItemHeart;
             this.setColor(Color.red);
+        } else if (rdItem < bombP + PierceP + ShieldP + HearthP + FeverP) {
+            this.spriteType = SpriteType.ItemFeverTime;
+            this.setColor(Color.yellow);
         } else {
             this.spriteType = SpriteType.ItemCoin;
             this.setColor(Color.yellow);

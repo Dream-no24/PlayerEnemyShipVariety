@@ -2,7 +2,9 @@ package inventory_develop;
 
 import Enemy.PiercingBullet;
 import Enemy.PiercingBulletPool;
+import engine.Core;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,15 +18,23 @@ public class NumberOfBullet{
     private static final int OFFSET_X_THREEBULLETS = 12;
 
     /** Bullet levels */
-    private static int bulletLevel = 2;
+    private static int bulletLevel = 1;
     /** PiercingBullet levles */
-    private static int piercingbulletLevel = 2;
+    private static int piercingbulletLevel = 1;
     private final int PierceMax = 3;
 
     /**
      * Constructor
      */
     public NumberOfBullet() {
+        try {
+            bulletLevel = Core.getUpgradeManager().getBulletNum();
+            if (bulletLevel > 3){
+                bulletLevel = 3;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -58,16 +68,13 @@ public class NumberOfBullet{
 
     }
 
-    public void bulletup(){
-        if (bulletLevel <= 3){
-            bulletLevel += 1;
-        }
-    }
-
     public void pierceup() {
         if (piercingbulletLevel < PierceMax){
             piercingbulletLevel += 1;
         }
     }
 
+    public void ResetPierceLevel(){
+        piercingbulletLevel = 1;
+    }
 }

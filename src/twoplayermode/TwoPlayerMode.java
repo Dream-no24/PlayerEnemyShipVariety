@@ -1,58 +1,86 @@
 package twoplayermode;
 
-import entity.Ship;
+
+
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.Set;
+import java.util.HashSet;
+
+import screen.GameScreen;
+import engine.GameState;
+import engine.GameSettings;
+import entity.Ship;
+import engine.DrawManager;
 import Enemy.PiercingBullet;
-import java.awt.Graphics2D;
+import entity.Bullet;
+import entity.BulletPool;
 
-public class TwoPlayerMode {
 
-    private PlayerShip player1;
-    private PlayerShip player2;
-    private Set<PiercingBullet> bullets;  // PiercingBullet 목록 관리
+public class TwoPlayerMode extends GameScreen {
 
-    // 생성자에서 두 명의 플레이어를 초기화
-    public TwoPlayerMode() {
-        player1 = new PlayerShip(50, 400, "resources/player1.png");  // 1P
-        player2 = new PlayerShip(250, 400, "resources/player2.png");  // 2P
-        // bullets도 초기화 필요
+    private Ship player2;
+    public int livestwo = 3;
+
+    public TwoPlayerMode(GameState gameState, GameSettings gameSettings, boolean bonusLife, int width, int height, int fps) {
+        super(gameState, gameSettings, bonusLife, width, height, fps);
+        this.player2 = new Ship(width / 4, height -30);
+        this.player2.setColor(Color.RED);// 두 번째 플레이어 초기화
+        this.player2.setSpriteType(DrawManager.SpriteType.Ship);
     }
 
-    // 키 입력 처리
-    public void handleKeyPress(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_A:
-                player1.moveLeft();
-                break;
-            case KeyEvent.VK_D:
-                player1.moveRight();
-                break;
-            case KeyEvent.VK_LEFT:
-                player2.moveLeft();
-                break;
-            case KeyEvent.VK_RIGHT:
+    @Override
+    protected void update() {
+        super.update(); // GameScreen의 기존 기능을 사용
+
+        if (player2 != null) {
+            boolean moveRight2 = inputManager.isKeyDown(KeyEvent.VK_C);
+            boolean moveLeft2 = inputManager.isKeyDown(KeyEvent.VK_Z);
+
+            if (moveRight2 && player2.getPositionX() + player2.getWidth() < width) {
                 player2.moveRight();
-                break;
-            case KeyEvent.VK_W:
-                player1.shoot(bullets);
-                break;
-            case KeyEvent.VK_UP:
+            }
+            if (moveLeft2 && player2.getPositionX() > 0) {
+                player2.moveLeft();
+            }
+            if (inputManager.isKeyDown(KeyEvent.VK_X)) {
                 player2.shoot(bullets);
-                break;
+            }
+
+            // Player 2와 적의 총알 충돌 처리
+            Set<Bullet> recyclable = new HashSet<>();
+            for (Bullet bullet : this.bullets) {
+                if (bullet.getSpeed() > 0 && checkCollision(bullet, player2)) {
+                    recyclable.add(bullet);
+                    if (!player2.isDestroyed()) {
+                        player2.destroy();
+                        livestwo--;
+                        System.out.println("Hit on Player 2, " + livestwo + " lives remaining.");
+
+                        if (livestwo <= 0) {
+                            System.out.println("Player 2 destroyed.");
+                            player2 = null;  // Player 2가 파괴된 경우 처리
+                        }
+                    }
+                }
+            }
+            this.bullets.removeAll(recyclable);
+            BulletPool.recycle(recyclable);
         }
+
     }
 
-    // 두 플레이어 상태 업데이트
-    public void updateGame() {
-        player1.update();
-        player2.update();
-        // 게임 종료 또는 충돌 처리 등의 추가 로직 구현
-    }
+    @Override
+    public void draw() {
 
-    // 두 플레이어의 렌더링
-    public void renderPlayers(Graphics2D g) {
-        player1.render(g);
-        player2.render(g);
+
+
+        if (player2 != null) {
+            drawManager.drawEntity(player2, player2.getPositionX(), player2.getPositionY());
+        }
+
+
+
+        super.draw(); // GameScreen의 기존 기능을 사용
     }
 }

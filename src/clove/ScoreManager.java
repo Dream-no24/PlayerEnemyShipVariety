@@ -1,6 +1,7 @@
 package clove;
 
 import java.time.Instant;
+import inventory_develop.Bomb;
 
 public class ScoreManager {
 
@@ -21,6 +22,10 @@ public class ScoreManager {
     // Adds score based on enemy score and level
     public void addScore(int enemyScore) {
         int scoreToAdd = enemyScore * this.level;
+        if (Bomb.isBombExploded()){
+            scoreToAdd += (250 + (Bomb.getTotalPoint() * this.level));
+            Bomb.resetBombExploded();
+        }
         this.levelScore += scoreToAdd;
         this.accumulatedScore += scoreToAdd;
         //System.out.println("Enemy destroyed. Score added: " + scoreToAdd + ", Level Score: " + this.levelScore);

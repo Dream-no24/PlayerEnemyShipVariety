@@ -2,7 +2,7 @@ bgm;inGame_bgm;pixelated-drive-228439.wav;-7
 bgm;mainMenu_bgm;705061__xcreenplay__choatic-arcade-clash.wav;-2
 bgm;highScore_bgm;465902__zagi2__retro-techno.wav;-2
 es;menuSelect_es;752736__etheraudio__square-blip-non-fade.wav;-2
-es;ally_airship_damage;ally_airship_damage.wav;4.0
+es;ally_airship_damage;ally_airship_damage.wav;6.0
 es;ally_airship_destroy_explosion;ally_airship_explosion.wav;3.0
 es;start_button_ES;start_button.wav;3.0
 es;basic_enemy_die;332056__qubodup__fast-collision.wav;-2
@@ -12,4 +12,8 @@ es;Enemy_Gun_Shot_1_ES;enemyGunShot01.wav;-5.0
 es;Enemy_Gun_Shot_2_ES;enemyGunShot02.wav;-3.5
 es;UFO_come_up;276885__18hiltc__rocket-fly-by.wav;-3.1
 es;My_Gun_Shot;214990__peridactyloptrix__laser-blast-x3.wav;1.0
-
+es;item_coin;item_coin.wav;-1.0
+es;enemy_explosion;retro-explode-2-236688.wav;-8.0
+es;get_item;coin-collect-retro-8-bit-sound-effect-145251.wav;-2.5
+es;obstacle_explosion;obstacle_explosion.wav;5.0
+es;achievement;635075__olivertravian__popchat.wav;6.0

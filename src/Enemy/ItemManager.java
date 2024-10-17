@@ -4,10 +4,10 @@ import engine.Core;
 import entity.EnemyShip;
 import entity.Ship;
 import inventory_develop.Bomb;
+import inventory_develop.FeverTimeItem;
 import screen.GameScreen;
 import engine.DrawManager;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -17,6 +17,9 @@ import inventory_develop.ItemBarrierAndHeart;
 import inventory_develop.NumberOfBullet;
 
 import CtrlS.CurrencyManager;
+
+// Sound Operator
+import Sound_Operator.SoundManager;
 
 
 public class ItemManager {
@@ -31,7 +34,10 @@ public class ItemManager {
     private NumberOfBullet numberOfBullet;
     private Ship ship;
     private PlayerGrowth growth;
+    private FeverTimeItem feverTimeItem;
     private CurrencyManager currencyManager;
+    // Sound Operator
+    private static SoundManager sm;
 
     public ItemManager(int screenHeight, DrawManager drawManager, GameScreen gameScreen) {
         this.items = new HashSet<>();
@@ -41,6 +47,7 @@ public class ItemManager {
         this.ship = gameScreen.getShip();       // Team Inventory
         this.growth = ship.getPlayerGrowth();
         this.Item2 = gameScreen.getItem();
+        this.feverTimeItem = gameScreen.getFeverTimeItem();
         this.numberOfBullet = new NumberOfBullet();
     }
 
@@ -83,24 +90,34 @@ public class ItemManager {
                 case ItemBomb:
                     Bomb.setIsbomb(true);
                     Bomb.setCanShoot(true);
+                    //Sound_Operator
+                    sm = SoundManager.getInstance();
+                    sm.playES("get_item");
                     break;
                 case ItemBarrier:
                     Item2.activatebarrier();
+                    //Sound_Operator
+                    sm = SoundManager.getInstance();
+                    sm.playES("get_item");
                     break;
                 case ItemHeart:
                     Item2.activeheart(gameScreen, ship, growth);
+                    //Sound_Operator
+                    sm = SoundManager.getInstance();
+                    sm.playES("get_item");
+                    break;
+                case ItemFeverTime: // 피버타임 아이템일 경우
+                    feverTimeItem.activate();
                     break;
                 case ItemPierce:
                     numberOfBullet.pierceup();
                     ship.increaseBulletSpeed();
+                    //Sound_Operator
+                    sm = SoundManager.getInstance();
+                    sm.playES("get_item");
                     break;
                 case ItemCoin:
-                    try {
-                        Core.getCurrencyManager().addCurrency(10);
-                        logger.info("You get coin (10$)");
-                    } catch (IOException e) {
-                        logger.warning("Couldn't load currency!");
-                    }
+                    this.logger.info("You get coin!");
             }
 
             addItemRecycle(item);
@@ -110,6 +127,12 @@ public class ItemManager {
     public void addItemRecycle(Item item) {
         recyclableItems.add(item);
         String itemLog = item.getSpriteType().toString().toLowerCase().substring(4);
+        // Sound Operator
+        if (itemLog.equals("coin")){
+            sm = SoundManager.getInstance();
+            sm.playES("item_coin");
+        }
+
         if (!itemLog.equals("coin")) {
             this.logger.info("get " + itemLog + " item");   // Change log for each item
         }

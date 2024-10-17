@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.time.LocalDate;
 
+import screen.GameScreen;
+
 /**
  * Implements a high score record.
  * 
@@ -33,6 +35,8 @@ public class Score implements Comparable<Score> {
 	private int totalShipDestroyed;
 	/** achievement number that player cleared */
 	private int clearAchievementNumber;
+	/** Time for Total level clear time(player has done) */
+	private long playTime;
 
 	/**
 	 * Constructor.
@@ -54,20 +58,20 @@ public class Score implements Comparable<Score> {
 		this.Day = currentDate.getDayOfMonth();
 		this.Date = String.format("%d-%02d-%02d", Year, Month, Day);
 
-		try{
+        try{
 			Statistics stat = new Statistics();
 			stat = stat.loadUserData(stat);
-
 			this.highestLevel = stat.getHighestLevel();
 			this.totalShipDestroyed = stat.getTotalShipsDestroyed();
 			this.clearAchievementNumber = stat.getClearAchievementNumber();
+			this.playTime = stat.getTotalPlaytime();
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
 	}
 
 	/**
-	 * Constructor for read Record files
+	 * Constructor for read/write Recent Record files
 	 *
 	 * @param name
 	 * 				Player name but non-value parameter, just for overload constructor
@@ -91,6 +95,15 @@ public class Score implements Comparable<Score> {
 		this.totalShipDestroyed = totalShipDestroyed;
 		this.clearAchievementNumber = clearAchievementNumber;
 	}
+	/**
+	 * Constructor
+	 */
+	public Score(final String name, final int score, final long playTime) {
+		this.name = name;
+		this.score = score;
+		this.playTime = playTime;
+	}
+
 
 	/**
 	 * Getter for the player's name.
@@ -122,6 +135,8 @@ public class Score implements Comparable<Score> {
 	 */
 	public final String getDate() { return this.Date; }
 
+	public long getPlayTime() { return playTime; }
+
 	public final int getHighestLevel() { return this.highestLevel; }
 
 	public final int getShipDestroyed() { return this.totalShipDestroyed; }
@@ -139,9 +154,12 @@ public class Score implements Comparable<Score> {
 
 	@Override
 	public final int compareTo(final Score score) {
-		int comparison = this.score < score.getScore() ? 1 : this.score > score
-				.getScore() ? -1 : 0;
-		return comparison;
+		/*int comparison = this.score < score.getScore() ? 1 : this.score > score
+				.getScore() ? -1 : 0;*/
+		int comparison = Integer.compare(score.score, this.score);
+		if (comparison != 0) { return comparison; }
+
+		return Long.compare(this.playTime, score.playTime);
 	}
 
 }

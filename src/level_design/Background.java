@@ -1,21 +1,40 @@
 package level_design;
 
-import engine.Frame;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import engine.Frame;
 
 public class Background {
-    // Arbitrary value, for some reason the game jolts if I set it to zero. 25 Produces a seamless flow
+    private static Background instance;
+
+    // Arbitrary value, for some reason the background jolts if I set it to zero. 25 Produces a seamless flow
     private final int resetOffset = 25;
     private final int scrollSpeedHorizontal = 3;
-    private final int VerticalSpeedLimit = 2;
+    private final int scrollSpeedVertical = 2;
 
-    private int verticalOffset = resetOffset;
-    // Also arbitrary, but it sets the position at the middle
-    private int horizontalOffset = -448;
-    private int scrollSpeedVertical = 1;
+    private int screenWidth;
+    private int screenHeight;
+    private int horizontalOffset;
+    private int verticalOffset;
 
+    private Background() {
+        // Empty constructor
+    }
+
+    public static synchronized Background getInstance() {
+        if (instance == null) {
+            instance = new Background();
+        }
+        return instance;
+    }
+
+    public void initialize(Frame frame) {
+        this.screenWidth = frame.getWidth();
+        this.screenHeight = frame.getHeight();
+        this.horizontalOffset = -screenWidth;
+        this.verticalOffset = -screenHeight;
+    }
 
     public static List<String> levelBackgrounds;
     // Static block to initialize levelBackgrounds
@@ -38,20 +57,17 @@ public class Background {
         }
     }
     // Dynamic method to update background image vertical offset
-    public int getVerticalOffset(Frame frame) {
-        if (verticalOffset <= -frame.getHeight()) {
+    public int getVerticalOffset() {
+        if (verticalOffset <= -screenHeight) {
            verticalOffset = resetOffset;
-
-           if (scrollSpeedVertical < VerticalSpeedLimit) {
-               scrollSpeedVertical++;
-           }
         }
         verticalOffset -= scrollSpeedVertical;
 
         return verticalOffset;
     }
+
     // Dynamic method to update background image horizontal offset
-    public int getHorizontalOffset(Frame frame, boolean backgroundMoveRight, boolean backgroundMoveLeft) {
+    public int getHorizontalOffset(boolean backgroundMoveRight, boolean backgroundMoveLeft) {
         if (backgroundMoveRight) {
             horizontalOffset -= scrollSpeedHorizontal;
         }

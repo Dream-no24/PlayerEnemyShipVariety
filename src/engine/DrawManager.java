@@ -14,9 +14,9 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import CtrlS.RoundState;
+import CtrlS.Gem;
 import entity.AddSign;
 import entity.Coin;
-import entity.Gem;
 import inventory_develop.Bomb;
 import screen.Screen;
 import entity.Entity;
@@ -35,7 +35,7 @@ import javax.imageio.ImageIO;
 public class DrawManager {
 
 	/** Singleton instance of the class. */
-	private static DrawManager instance;
+	public static DrawManager instance;
 	/** Current frame. */
 	private static Frame frame;
 	/** FileManager instance. */
@@ -56,6 +56,10 @@ public class DrawManager {
 	private static Font fontBig;
 	/** Big sized font properties. */
 	private static FontMetrics fontBigMetrics;
+
+	/** ###TEAM INTERNATIONAL ### */
+	private Background background;
+	private BufferedImage backgroundImage;
 
 	/** Sprite types mapped to their images. */
 	private static Map<SpriteType, boolean[][]> spriteMap;
@@ -104,14 +108,16 @@ public class DrawManager {
 		ItemPierce,
 		ItemBomb,
 		ItemBarrier,
-
+		ItemFeverTime,
 		//Produced by Starter Team
+
+        //Produced by Starter Team
 		/** coin */
 		Coin,
-		/** gem */
-		Gem,
 		/** add sign */
 		AddSign,
+		/** Gem - Added by CtrlS */
+		Gem,
 		Obstacle
 	};
 
@@ -146,14 +152,15 @@ public class DrawManager {
 			spriteMap.put(SpriteType.Heart, new boolean[13][8]);
 			spriteMap.put(SpriteType.Boss, new boolean[24][16]); //by Enemy team
 			spriteMap.put(SpriteType.Coin, new boolean[5][5]); //by Starter Team
-			spriteMap.put(SpriteType.Gem, new boolean[5][5]); //by Starter Team
 			spriteMap.put(SpriteType.AddSign, new boolean[5][5]); //by Starter Team
+			spriteMap.put(SpriteType.Gem, new boolean[7][6]); // CtrlS: res/graphics, line 20
 			//by Item team
 			spriteMap.put(SpriteType.ItemHeart, new boolean[7][5]);
 			spriteMap.put(SpriteType.ItemBarrier, new boolean[9][10]);
 			spriteMap.put(SpriteType.ItemBomb, new boolean[7][9]);
 			spriteMap.put(SpriteType.ShipBarrierStatus, new boolean[13][8]);	// temporary
 			spriteMap.put(SpriteType.ItemCoin, new boolean[7][7]);
+			spriteMap.put(SpriteType.ItemFeverTime, new boolean[9][9]);
 			spriteMap.put(SpriteType.ItemPierce, new boolean[7][7]);
 
 			fileManager.loadSprite(spriteMap);
@@ -176,7 +183,7 @@ public class DrawManager {
 	 *
 	 * @return Shared instance of DrawManager.
 	 */
-	static DrawManager getInstance() {
+	public static DrawManager getInstance() {
 		if (instance == null)
 			instance = new DrawManager();
 		return instance;
@@ -240,14 +247,24 @@ public class DrawManager {
 	 */
 	public void drawEntity(final Entity entity, final int positionX,
 						   final int positionY) {
-		boolean[][] image = spriteMap.get(entity.getSpriteType());
 
-		backBufferGraphics.setColor(entity.getColor());
-		for (int i = 0; i < image.length; i++)
-			for (int j = 0; j < image[i].length; j++)
-				if (image[i][j])
-					backBufferGraphics.drawRect(positionX + i * 2, positionY
-							+ j * 2, 1, 1);
+		try {
+			boolean[][] image = spriteMap.get(entity.getSpriteType());
+
+			backBufferGraphics.setColor(entity.getColor());
+			for (int i = 0; i < image.length; i++)
+				for (int j = 0; j < image[i].length; j++)
+					if (image[i][j])
+						backBufferGraphics.drawRect(positionX + i * 2, positionY
+								+ j * 2, 1, 1);
+
+		} catch(Exception e) {
+
+			System.out.println(e);
+			System.exit(1);
+		}
+
+
 	}
 
 	/**
@@ -398,11 +415,34 @@ public class DrawManager {
 				/ 4 * 2 + fontRegularMetrics.getHeight() * 2); // adjusted Height
 
 		if (option3 == 0) {merchantState = merchant;}
-		if (option3 == 1) {merchantState = bulletCountString;}
-		if (option3 == 2) {merchantState = shipSpeedString;}
-		if (option3 == 3) {merchantState = attackSpeedString;}
-		if (option3 == 4) {merchantState = coinGainString;}
-		if (option == 4) {merchantState = "<- " + merchantState + " ->";}
+		try {
+			if (option3 == 1) {
+				merchantState = bulletCountString + " +" + Core.getUpgradeManager().LevelCalculation
+						(Core.getUpgradeManager().getBulletCount()) + "   " + Core.getUpgradeManager().Price(1) + " "
+						+ Core.getUpgradeManager().whatMoney(Core.getUpgradeManager().getBulletCount(),1);
+			}
+			if (option3 == 2) {
+				merchantState = shipSpeedString + " +" + Core.getUpgradeManager().LevelCalculation
+						(Core.getUpgradeManager().getSpeedCount()) + "   " + Core.getUpgradeManager().Price(2) + " "
+						+ Core.getUpgradeManager().whatMoney(Core.getUpgradeManager().getSpeedCount(),0);
+			}
+			if (option3 == 3) {
+				merchantState = attackSpeedString + " +" + Core.getUpgradeManager().LevelCalculation
+						(Core.getUpgradeManager().getAttackCount()) + "   " + Core.getUpgradeManager().Price(3) + " "
+						+ Core.getUpgradeManager().whatMoney(Core.getUpgradeManager().getAttackCount(),0);
+			}
+			if (option3 == 4) {
+				merchantState = coinGainString + " +" + Core.getUpgradeManager().LevelCalculation
+						(Core.getUpgradeManager().getCoinCount()) + "   " + Core.getUpgradeManager().Price(4) + " "
+						+ Core.getUpgradeManager().whatMoney(Core.getUpgradeManager().getCoinCount(),0);
+			}
+			if (option == 4) {
+				merchantState = "<- " + merchantState + " ->";
+			}
+		} catch (IOException e){
+			throw new RuntimeException(e);
+		}
+
 		if (option == 4 && option3 == 0)
 			backBufferGraphics.setColor(Color.GREEN);
 		else if (option == 4 && option3 != 0)
@@ -449,7 +489,7 @@ public class DrawManager {
 	 *            If the score is a new high score.
 	 */
 
-	//Ctrl S - add Currency String
+	//Ctrl S - add Coin String
 	public void drawResults(final Screen screen, final int score,
 							final int livesRemaining, final int shipsDestroyed,
 							final float accuracy, final boolean isNewRecord, final GameState gameState) {
@@ -458,7 +498,7 @@ public class DrawManager {
 		String shipsDestroyedString = "enemies destroyed " + shipsDestroyed;
 		String accuracyString = String
 				.format("accuracy %.2f%%", accuracy * 100);
-		String currencyString = "Earned  $ " + gameState.getCurrency() + "  Coins!";
+		String coinString = "Earned  $ " + gameState.getCoin() + "  Coins!";
 
 		int height = isNewRecord ? 4 : 2;
 
@@ -473,7 +513,7 @@ public class DrawManager {
 						* 4);
 		drawCenteredRegularString(screen, accuracyString, screen.getHeight()
 				/ height + fontRegularMetrics.getHeight() * 6);
-		drawCenteredRegularString(screen, currencyString, screen.getHeight()
+		drawCenteredRegularString(screen, coinString, screen.getHeight()
 				/ height + fontRegularMetrics.getHeight() * 8);
 	}
 
@@ -528,7 +568,7 @@ public class DrawManager {
 	}
 
 	/**
-	 * Draws basic content of game over screen.
+	 * Draws basic content of game end screen.
 	 *
 	 * @param screen
 	 *            Screen to draw on.
@@ -537,16 +577,17 @@ public class DrawManager {
 	 * @param isNewRecord
 	 *            If the score is a new high score.
 	 */
-	public void drawGameOver(final Screen screen, final boolean acceptsInput,
-							 final boolean isNewRecord) {
-		String gameOverString = "Game Over";
+	// CtrlS
+	public void drawGameEnd(final Screen screen, final boolean acceptsInput,
+							 final boolean isNewRecord, boolean isGameClear) {
+		String gameEndString = isGameClear ? "Game Clear" : "Game Over";
 		String continueOrExitString =
 				"Press Space to play again, Escape to exit";
 
 		int height = isNewRecord ? 4 : 2;
 
 		backBufferGraphics.setColor(Color.GREEN);
-		drawCenteredBigString(screen, gameOverString, screen.getHeight()
+		drawCenteredBigString(screen, gameEndString, screen.getHeight()
 				/ height - fontBigMetrics.getHeight() * 2);
 
 		if (acceptsInput)
@@ -609,8 +650,8 @@ public class DrawManager {
 		String scoreString = "";
 
 		for (Score score : highScores) {
-			scoreString = String.format("%s        %04d", score.getName(),
-					score.getScore());
+			scoreString = String.format("%s        %04d           %04d", score.getName(),
+					score.getScore(), score.getPlayTime());
 			drawCenteredRegularString(screen, scoreString, screen.getHeight()
 					/ 4 + fontRegularMetrics.getHeight() * (i + 1) * 2);
 			i++;
@@ -631,25 +672,33 @@ public class DrawManager {
 		backBufferGraphics.setColor(Color.WHITE);
 		int i = 0;
 		boolean isFirstLine = true;
-		String scoreString = "";
+		int[] attributeXPosition = {50, 200, 295, 380, 480};
+		int[] instanceXPostition = {25, 205, 300, 400, 515};
+
+		if (isFirstLine) { // Create Header
+			String[] Attribute = {"Date", "Score", "Level", "Destroy", "Achievement"};
+			for(int k=0; k<5; k++){
+				drawRightedRegularString(screen, Attribute[k], attributeXPosition[k],
+						screen.getHeight() / 4 + fontRegularMetrics.getHeight() * (i + 1) * 2);
+			}
+			isFirstLine = false;
+
+			i++;
+		}
 
 		for (Score score : recentScores) {
-			if (isFirstLine) { // Create Header
-				scoreString = String.format("           Date                           " +
-						" Score       Level       Destroy       Achievement");
-				drawRightedRegularString(screen, scoreString, screen.getHeight()
-						/ 4 + fontRegularMetrics.getHeight() * (i + 1) * 2);
-				isFirstLine = false;
-				i++;
-			} else {
-				scoreString = String.format("   %s                      %04d         %04d             %04d         " +
-								"             %04d",
-						score.getDate(), score.getScore(), score.getHighestLevel(),
-						score.getShipDestroyed(), score.getClearAchievementNumber());
-				drawRightedRegularString(screen, scoreString, screen.getHeight()
-						/ 4 + fontRegularMetrics.getHeight() * (i + 1) * 2);
-				i++;
+			String[] Instance = new String[5];
+			Instance[0] = String.format("%s",score.getDate());
+			Instance[1] = String.format("%04d",score.getScore());
+			Instance[2] = String.format("%04d",score.getHighestLevel());
+			Instance[3] = String.format("%04d", score.getShipDestroyed());
+			Instance[4] = String.format("%04d", score.getClearAchievementNumber());
+
+			for(int k=0; k<5; k++){
+				drawRightedRegularString(screen, Instance[k], instanceXPostition[k],
+						screen.getHeight() / 4 + fontRegularMetrics.getHeight() * (i + 1) * 2);
 			}
+			i++;
 		}
 	}
 
@@ -667,9 +716,9 @@ public class DrawManager {
 	 * 		//Clove
 	 */
 	public void drawRightedRegularString(final Screen screen,
-										 final String string, final int height) {
+										 final String string, final int width, final int height) {
 		backBufferGraphics.setFont(fontRegular);
-		backBufferGraphics.drawString(string, 0, height);
+		backBufferGraphics.drawString(string, width, height);
 	}
 
 	/**
@@ -777,7 +826,7 @@ public class DrawManager {
 		backBufferGraphics.setColor(Color.GREEN);
 		drawCenteredBigString(screen, stageCoinString, screen.getHeight() / 3);
 		backBufferGraphics.setColor(Color.WHITE);
-		drawCenteredBigString(screen, Integer.toString(roundState.getRoundCurrency()), screen.getHeight() / 3 + fontBigMetrics.getHeight() / 2 * 3);
+		drawCenteredBigString(screen, Integer.toString(roundState.getRoundCoin()), screen.getHeight() / 3 + fontBigMetrics.getHeight() / 2 * 3);
 
 		//draw HitRate Bonus part
 		float hitRate = roundState.getRoundHitRate(); // Calculate HitRate
@@ -851,21 +900,22 @@ public class DrawManager {
 	* ### TEAM INTERNATIONAL ###
 	* Background draw and update method
 	*/
-	Background background = new Background();
 
-	public void drawBackground(final Screen screen, int levelNumber, boolean backgroundMoveRight, boolean backgroundMoveLeft) {
+	public void loadBackground(int levelNumber) {
+		background = Background.getInstance();
 		// I still have no clue how relative pathing or class pathing works
 		InputStream imageStream = Background.getBackgroundImageStream(levelNumber);
-		BufferedImage backgroundImage;
 		try {
 			assert imageStream != null;
 			backgroundImage = ImageIO.read(imageStream);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
 
-		int verticalOffset = background.getVerticalOffset(frame);
-		int horizontalOffset = background.getHorizontalOffset(frame, backgroundMoveRight, backgroundMoveLeft);
+	public void drawBackground(boolean backgroundMoveRight, boolean backgroundMoveLeft) {
+		int verticalOffset = background.getVerticalOffset();
+		int horizontalOffset = background.getHorizontalOffset(backgroundMoveRight, backgroundMoveLeft);
 
 		backBufferGraphics.drawImage(backgroundImage, horizontalOffset, verticalOffset, null);
 	}

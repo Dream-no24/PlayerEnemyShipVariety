@@ -1,10 +1,13 @@
 package Sound_Operator;
 
+import engine.Core;
+
 import javax.sound.sampled.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class SoundManager {
     private static SoundManager instance;
@@ -12,6 +15,7 @@ public class SoundManager {
     static Map<String, Clip> BGMs;
     static String[][] ESFiles;
     static String[][] BGMFiles;
+    private static Logger logger;
 /**
 * Code Description
 * Base: BGM files are stored in res/sound/BGM
@@ -29,15 +33,9 @@ public class SoundManager {
 */
 
 
-//  test code
-//    public static void main(String[] args) throws IOException, InterruptedException {
-//        SoundManager sm = SoundManager.getInstance();
-//        sm.playBGM("test");
-//        Thread.sleep(10000);
-//    }
-
     private SoundManager() {
         try {
+            logger = Core.getLogger();
             BufferedReader br = new BufferedReader(new FileReader("res/sound"));
             int ESFileCount = Objects.requireNonNull((new File("res/Sound.assets/ES")).listFiles()).length;
             int BGMFileCount = Objects.requireNonNull((new File("res/Sound.assets/BGM")).listFiles()).length;
@@ -69,7 +67,7 @@ public class SoundManager {
                 }
             }
         } catch (IOException e) {
-            System.out.println(e);
+            logger.info(String.valueOf(e));
         }
     }
 
@@ -82,7 +80,8 @@ public class SoundManager {
 
     public void stopAllBGM() {
         for (Clip c : BGMs.values()) {
-            c.stop();
+            if (c != null)
+                c.stop();
         }
     }
 
@@ -90,7 +89,7 @@ public class SoundManager {
         try {
             if (!BGMs.containsKey(name)) {
                 File soundFile = new File(filePath);
-                System.out.println(soundFile.getName()+" is loading");
+                logger.info(soundFile.getName()+" is loading");
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
                 AudioFormat baseFormat = audioStream.getFormat();
                 AudioFormat targetFormat = new AudioFormat(
@@ -113,10 +112,10 @@ public class SoundManager {
 
 //                해쉬멥에 추가
                 BGMs.put(name, clip); // 미리 로드하여 맵에 저장
-                System.out.println(soundFile.getName()+" load complete");
+                logger.info(soundFile.getName()+" load complete");
             }
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
+            logger.info(String.valueOf(e));
         }
     }
 
@@ -137,10 +136,10 @@ public class SoundManager {
             if (!EffectSounds.containsKey(name)) {
                 String[] tmp = {filePath, String.valueOf(volume)};
                 EffectSounds.put(name, tmp);
-                System.out.println(name+" is set");
+                logger.info(name+ "is set");
             }
         } catch (Exception e) {
-            System.out.println(e);
+            logger.info(String.valueOf(e));
         }
     }
 
@@ -149,7 +148,7 @@ public class SoundManager {
             if (EffectSounds.containsKey(name)) {
                 String[] tmp = EffectSounds.get(name);
                 File soundFile = new File(tmp[0]);
-                System.out.println(soundFile.getName() + " is loading");
+                logger.fine(soundFile.getName() + " is loading");
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
                 AudioFormat baseFormat = audioStream.getFormat();
                 AudioFormat targetFormat = new AudioFormat(
@@ -177,13 +176,13 @@ public class SoundManager {
                             }
                         }
                 );
-                System.out.println(soundFile.getName() + " load complete");
+                logger.info(soundFile.getName() + " load complete");
                 return 1;
             }
-            System.out.println("there is no ES : " + name);
+            logger.info("there is no ES : " + name);
             return 0;
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
+            logger.info(String.valueOf(e));
             return 0;
         }
     }
@@ -194,7 +193,7 @@ public class SoundManager {
             new Thread(() -> playPreloadedBGM(name)).start();
             return 1;
         }catch (Exception e){
-            System.out.println(e);
+            logger.info(String.valueOf(e));
             return 0;
         }
     }
@@ -204,15 +203,15 @@ public class SoundManager {
             new Thread(() -> playEffectSound(name)).start();
             return 1;
         }catch (Exception e){
-            System.out.println(e);
+            logger.info(String.valueOf(e));
             return 0;
         }
     }
 
     public int modifyBGMVolume(String name, float volume){
         if(volume > 2 || volume < -60){
-            System.out.println("Error : volume is out of index!!!!!");
-            System.out.println("input volume : "+ volume);
+            logger.info("Error : volume is out of index!!!!!");
+            logger.info("input volume : "+ volume);
             return 0;
         }
         if(BGMs.containsKey(name)){
@@ -226,8 +225,8 @@ public class SoundManager {
 
     public int modifyESVolume(String name, float volume){
         if(volume > 2 || volume < -60){
-            System.out.println("Error : volume is out of index!!!!!");
-            System.out.println("input volume : "+ volume);
+            logger.info("Error : volume is out of index!!!!!");
+            logger.info("input volume : "+ volume);
             return 0;
         }
         if(EffectSounds.containsKey(name)){
@@ -236,5 +235,18 @@ public class SoundManager {
         }else{
             return 0;
         }
+    }
+
+    // ksm
+    public void playShipDieSounds() {
+        playES("ally_airship_destroy_explosion");
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                logger.info(String.valueOf(e));
+            }
+            playES("ally_airship_destroy_die");
+        }).start();
     }
 }

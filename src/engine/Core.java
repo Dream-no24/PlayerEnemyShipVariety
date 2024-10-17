@@ -1,5 +1,6 @@
 package engine;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
@@ -11,12 +12,13 @@ import java.util.logging.Logger;
 import CtrlS.CurrencyManager;
 import CtrlS.RoundState;
 import CtrlS.ReceiptScreen;
+import CtrlS.UpgradeManager;
 import Sound_Operator.SoundManager;
-import CtrlS.RoundState;
-import CtrlS.ReceiptScreen;
-import Sound_Operator.SoundManager;
+import level_design.Background;
+import clove.AchievementConditions;
 import clove.AchievementManager;
 import screen.*;
+import twoplayermode.TwoPlayerMode;
 
 
 /**
@@ -79,6 +81,7 @@ public final class Core {
 	// Sound Operator
 	private static SoundManager sm;
     private static AchievementManager achievementManager; // Team CLOVER
+	private static AchievementConditions achievementConditions;
 
 	/**
 	 * Test implementation.
@@ -86,6 +89,7 @@ public final class Core {
 	 * @param args
 	 *            Program args, ignored.
 	 */
+
 	public static void main(final String[] args) {
 		try {
 			LOGGER.setUseParentHandlers(false);
@@ -106,6 +110,10 @@ public final class Core {
 			System.out.println("Initializing AchievementManager...");
 			achievementManager = new AchievementManager(DrawManager.getInstance());
 			System.out.println("AchievementManager initialized!");
+			achievementConditions = new AchievementConditions();
+
+			// CtrlS: Make instance of Upgrade Manager
+			Core.getUpgradeManager();
 
 		} catch (Exception e) {
 			// TODO handle exception
@@ -116,6 +124,10 @@ public final class Core {
 		DrawManager.getInstance().setFrame(frame);
 		int width = frame.getWidth();
 		int height = frame.getHeight();
+
+		/** ### TEAM INTERNATIONAL ###*/
+		/** Initialize singleton instance of a background*/
+		Background.getInstance().initialize(frame);
 
 		gameSettings = new ArrayList<GameSettings>();
 		gameSettings.add(SETTINGS_LEVEL_1);
@@ -132,11 +144,13 @@ public final class Core {
 		int returnCode = 1;
 		do {
 			// Add playtime parameter - Soomin Lee / TeamHUD
-			gameState = new GameState(1, 0, MAX_LIVES, 0, 0, 0, 0, 0);
+			// Add hitCount parameter - Ctrl S
+			// Add coinItemsCollected parameter - Ctrl S
+			gameState = new GameState(1, 0, MAX_LIVES, 0,0, 0, 0, 0, 0, 0, 0);
 			switch (returnCode) {
 			case 1:
 				// Main menu.
-				currentScreen = new TitleScreen(width, height, FPS);
+                currentScreen = new TitleScreen(width, height, FPS);
 				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 						+ " title screen at " + FPS + " fps.");
 				returnCode = frame.setScreen(currentScreen);
@@ -156,7 +170,6 @@ public final class Core {
 							&& gameState.getLivesRemaining() < MAX_LIVES;
 
 					GameState prevState = gameState;
-
 					currentScreen = new GameScreen(gameState,
 							gameSettings.get(gameState.getLevel() - 1),
 							bonusLife, width, height, FPS);
@@ -176,12 +189,15 @@ public final class Core {
 					gameState = new GameState(gameState.getLevel() + 1,
 							gameState.getScore(),
 							gameState.getLivesRemaining(),
+							gameState.getLivesTwoRemaining(),
 							gameState.getBulletsShot(),
 							gameState.getShipsDestroyed(),
 							gameState.getTime(),
-							gameState.getCurrency() + roundState.getRoundCurrency(),
-							gameState.getGem());
-					LOGGER.info("Round Currency: " + roundState.getRoundCurrency());
+							gameState.getCoin() + roundState.getRoundCoin(),
+							gameState.getGem(),
+							gameState.getHitCount(),
+							gameState.getCoinItemsCollected());
+          			LOGGER.info("Round Coin: " + roundState.getRoundCoin());
 					LOGGER.info("Round Hit Rate: " + roundState.getRoundHitRate());
 					LOGGER.info("Round Time: " + roundState.getRoundTime());
 
@@ -226,6 +242,99 @@ public final class Core {
 						+ " high score screen at " + FPS + " fps.");
 				returnCode = frame.setScreen(currentScreen);
 				LOGGER.info("Closing high score screen.");
+				break;
+			case 4:
+				LOGGER.info("Starting inGameBGM");
+				// Sound Operator
+				sm.playES("start_button_ES");
+				sm.playBGM("inGame_bgm");
+
+				do {
+					if (gameSettings == null || gameSettings.isEmpty()) {
+						gameSettings = new ArrayList<>();
+						gameSettings.add(SETTINGS_LEVEL_1);
+						gameSettings.add(SETTINGS_LEVEL_2);
+						gameSettings.add(SETTINGS_LEVEL_3);
+						gameSettings.add(SETTINGS_LEVEL_4);
+						gameSettings.add(SETTINGS_LEVEL_5);
+						gameSettings.add(SETTINGS_LEVEL_6);
+						gameSettings.add(SETTINGS_LEVEL_7);
+					}
+
+					GameSettings currentGameSettings = gameSettings.get(gameState.getLevel() - 1);
+
+					int fps = FPS;
+					boolean bonusLife = gameState.getLevel() % EXTRA_LIFE_FRECUENCY == 0 &&
+							(gameState.getLivesRemaining() < MAX_LIVES || gameState.getLivesTwoRemaining() < MAX_LIVES);
+
+					GameState prevState = gameState;
+
+					// TwoPlayerMode의 생성자를 호출할 때 필요한 매개변수를 모두 전달
+					currentScreen = new TwoPlayerMode(gameState, currentGameSettings, bonusLife, width, height, fps);
+
+
+
+
+					LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+							+ " game screen at " + FPS + " fps.");
+					frame.setScreen(currentScreen);
+					LOGGER.info("Closing game screen.");
+
+
+					achievementManager.updateAchievements(currentScreen); // TEAM CLOVER : Achievement
+
+					gameState = ((TwoPlayerMode) currentScreen).getGameState();
+
+					roundState = new RoundState(prevState, gameState);
+
+					// Add playtime parameter - Soomin Lee / TeamHUD
+					gameState = new GameState(gameState.getLevel() + 1,
+							gameState.getScore(),
+							gameState.getLivesRemaining(),
+							gameState.getLivesTwoRemaining(),
+							gameState.getBulletsShot(),
+							gameState.getShipsDestroyed(),
+							gameState.getTime(),
+							gameState.getCoin() + roundState.getRoundCoin(),
+							gameState.getGem(),
+							gameState.getHitCount(),
+							gameState.getCoinItemsCollected());
+					LOGGER.info("Round Coin: " + roundState.getRoundCoin());
+					LOGGER.info("Round Hit Rate: " + roundState.getRoundHitRate());
+					LOGGER.info("Round Time: " + roundState.getRoundTime());
+
+					// Show receiptScreen
+					// If it is not the last round and the game is not over
+					// Ctrl-S
+					if (gameState.getLevel() <= 7 && gameState.getLivesRemaining() > 0) {
+						LOGGER.info("loading receiptScreen");
+						currentScreen = new ReceiptScreen(width, height, FPS, roundState, gameState);
+
+						LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+								+ " receipt screen at " + FPS + " fps.");
+						frame.setScreen(currentScreen);
+						LOGGER.info("Closing receiptScreen.");
+					}
+
+					if (achievementManager != null) { // TEAM CLOVER : Added code
+						achievementManager.updateAchievements(currentScreen);
+					}
+
+				} while ((gameState.getLivesRemaining() > 0 || gameState.getLivesTwoRemaining() > 0) && gameState.getLevel() <= NUM_LEVELS);
+
+				LOGGER.info("Stop InGameBGM");
+				// Sound Operator
+				sm.stopAllBGM();
+
+				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+						+ " score screen at " + FPS + " fps, with a score of "
+						+ gameState.getScore() + ", "
+						+ gameState.getLivesRemaining() + " lives remaining, "
+						+ gameState.getBulletsShot() + " bullets shot and "
+						+ gameState.getShipsDestroyed() + " ships destroyed.");
+				currentScreen = new ScoreScreen(width, height, FPS, gameState);
+				returnCode = frame.setScreen(currentScreen);
+				LOGGER.info("Closing score screen.");
 				break;
 			case 5: // 7 -> 5 replaced by Starter
 				// Recent Records.
@@ -322,5 +431,15 @@ public final class Core {
 	// Team-Ctrl-S(Currency)
 	public static CurrencyManager getCurrencyManager() {
 		return CurrencyManager.getInstance();
+	}
+
+	/**
+	 * Controls access to the currency manager.
+	 *
+	 * @return Application currency manager.
+	 */
+	// Team-Ctrl-S(Currency)
+	public static UpgradeManager getUpgradeManager() {
+		return UpgradeManager.getInstance();
 	}
 }
