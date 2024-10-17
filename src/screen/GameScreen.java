@@ -223,14 +223,12 @@ public class GameScreen extends Screen {
 		drawManager.loadBackground(this.level);
 
 		enemyShipFormation = new EnemyShipFormation(this.gameSettings);
-		enemyShipFormation.setScoreManager(this.scoreManager);//add by team Enemy
 		enemyShipFormation.attach(this);
 		this.ship = new Ship(this.width / 2, this.height - 30);
 
 		/** initialize itemManager */
 		this.itemManager = new ItemManager(this.height, drawManager, this); //by Enemy team
 		this.itemManager.initialize(); //by Enemy team
-		enemyShipFormation.setItemManager(this.itemManager);//add by team Enemy
 
 		// Appears each 10-30 seconds.
 		this.enemyShipSpecialCooldown = Core.getVariableCooldown(
@@ -625,7 +623,7 @@ public class GameScreen extends Screen {
 						}
 						int CntAndPnt[] = this.enemyShipFormation._destroy(bullet, enemyShip, false);    // team Inventory
 						this.shipsDestroyed += CntAndPnt[0];
-                        this.scoreManager.addScore(CntAndPnt[1]); //clove // edit by enemy team
+                        this.scoreManager.addScore(feverScore); //clove
                         this.score += CntAndPnt[1];
 
 						// CtrlS - If collision occur then check the bullet can process
