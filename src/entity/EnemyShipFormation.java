@@ -404,17 +404,21 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 	 */
 	public final void shoot(final Set<PiercingBullet> bullets) { // Edited by Enemy
 		// For now, only ships in the bottom row are able to shoot.
-		int index = (int) (random() * this.shooters.size());
-		EnemyShip shooter = this.shooters.get(index);
-		if (this.shootingCooldown.checkFinished()) {
-			this.shootingCooldown.reset();
-			sm = SoundManager.getInstance();
-			sm.playES("Enemy_Gun_Shot_1_ES");
-			bullets.add(PiercingBulletPool.getPiercingBullet( // Edited by Enemy
-					shooter.getPositionX() + shooter.width / 2,
-					shooter.getPositionY(),
-					BULLET_SPEED,
-					0)); // Edited by Enemy
+		
+		// if shooters is empty list, does nothing. Just in case :)
+		if (!shooters.isEmpty()) { // added by team Enemy
+			int index = (int) (random() * this.shooters.size());
+			EnemyShip shooter = this.shooters.get(index);
+			if (this.shootingCooldown.checkFinished()) {
+				this.shootingCooldown.reset();
+				sm = SoundManager.getInstance();
+				sm.playES("Enemy_Gun_Shot_1_ES");
+				bullets.add(PiercingBulletPool.getPiercingBullet( // Edited by Enemy
+						shooter.getPositionX() + shooter.width / 2,
+						shooter.getPositionY(),
+						BULLET_SPEED,
+						0)); // Edited by Enemy
+			}
 		}
 	}
 
