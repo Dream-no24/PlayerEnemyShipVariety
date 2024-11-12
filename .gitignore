@@ -178,3 +178,6 @@ Invader_Space_HUD.iml
 # running files
 out/
 .idea/
+
+# Ignore Gradle project-specific cache directory
+.gradle
