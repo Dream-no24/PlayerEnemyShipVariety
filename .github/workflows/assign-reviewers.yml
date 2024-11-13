@@ -57,7 +57,8 @@ jobs:
           # 리뷰어 필터링: PR 작성자와 휴가자는 제외
           for reviewer in "${REVIEWERS[@]}"; do
             if [[ "$reviewer" != "$PR_AUTHOR" ]]; then
-              if jq -e ".\"$reviewer\" | index(\"$TODAY\")" "$HOLIDAY_FILE" > /dev/null; then
+              # 휴가일 확인
+              if [[ "${HOLIDAYS[$reviewer]}" == *"$TODAY"* ]]; then
                 echo "$reviewer is on holiday today ($TODAY)."
               else
                 FILTERED_REVIEWERS+=("$reviewer")
@@ -71,7 +72,7 @@ jobs:
           
           for reviewer in "${FILTERED_REVIEWERS[@]}"; do
             # GitHub ID를 Jira accountId로 변환
-            JIRA_ID=$(jq -r ".\"$reviewer\"" "$MAPPING_FILE")
+            JIRA_ID=${GITHUB_TO_JIRA_ID[$reviewer]}
           
             # Jira API로 리뷰어의 당일 할당 이슈 가져오기
             ISSUES=$(curl -s -u "$JIRA_USER:$JIRA_API_TOKEN" \
