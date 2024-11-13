@@ -17,6 +17,7 @@ local.properties
 .loadpath
 .idea/misc.xml
 .idea/vcs.xml
+.idea/
 
 # IntelliJ IDEA workspace file ignore
 .idea/workspace.xml
