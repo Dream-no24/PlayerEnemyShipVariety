@@ -88,15 +88,25 @@ jobs:
               START_DATE=$(echo "$ISSUE" | jq -r ".fields.startdate")
               DUE_DATE=$(echo "$ISSUE" | jq -r ".fields.duedate")
           
-              # Story Points
-              POINTS=$(echo "$ISSUE" | jq -r ".fields.${{ env.STORY_POINT_FIELD }} // 0")
+              # Story Points 값 가져오기
+              POINTS=$(echo "$ISSUE" | jq -r ".fields.${{ env.STORY_POINT_FIELD }}")
+              
+              # 예외 처리: POINTS가 0이거나 비어있는 경우 계산을 건너뛰기
+              if [[ -z "$POINTS" || "$POINTS" -eq 0 ]]; then
+                echo "Skipping issue with 0 points or no points available."
+                continue
+              fi
           
+              START_DATE_TIMESTAMP=$(date -d "$START_DATE" +%s)
+              DUE_DATE_TIMESTAMP=$(date -d "$DUE_DATE" +%s)
+              TODAY_TIMESTAMP=$(date -d "$TODAY" +%s)
+
               # 일정에 따른 가중치 계산 (오늘의 일일 점수)
               DAYS_TOTAL=$(( ( $(date -d "$DUE_DATE" +%s) - $(date -d "$START_DATE" +%s) ) / 86400 + 1 ))
-              DAILY_POINTS=$(echo "$POINTS / $DAYS_TOTAL" | bc -l)
-          
-              # 오늘이 작업 일정에 포함되면 REVIEWER_POINTS에 추가
-              if [[ "$START_DATE" <= "$TODAY" && "$TODAY" <= "$DUE_DATE" ]]; then
+
+              if [[ "$START_DATE_TIMESTAMP" -le "$TODAY_TIMESTAMP" && "$TODAY_TIMESTAMP" -le "$DUE_DATE_TIMESTAMP" ]]; then
+                REMAINING_DAYS=$(( ( $(date -d "$DUE_DATE" +%s) - $(date -d "$TODAY" +%s) ) / 86400 + 1 ))
+                DAILY_POINTS=$(echo "$POINTS / $DAYS_TOTAL * $REMAINING_DAYS" | bc -l)
                 REVIEWER_POINTS=$(echo "$REVIEWER_POINTS + $DAILY_POINTS" | bc -l)
               fi
             done
