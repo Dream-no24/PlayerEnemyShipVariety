@@ -22,7 +22,7 @@ jobs:
           STORY_POINT_FIELD: "customfield_10040"  # Story Points 필드 ID
         run: |
           # GitHub ID와 Jira ID 매핑 파일 로드
-          MAPPING_FILE="./data/github_jira_mapping.json"
+          MAPPING_FILE="data/github_jira_mapping.json"
           
           # 7명의 조원 GitHub 아이디를 배열에 저장
           REVIEWERS=("Dream-no24" "depave" "this-yujunkim" "gmvolt" "Jangjimin9766" "HSHyun" "NaJhinY")
@@ -34,7 +34,7 @@ jobs:
           TODAY=$(date +"%Y-%m-%d")
 
           # 휴무일 정보를 로드하여 JSON 파싱
-          HOLIDAY_FILE="./data/holidays.json"
+          HOLIDAY_FILE="data/holidays.json"
           FILTERED_REVIEWERS=()
           
           # 리뷰어 필터링: PR 작성자와 휴가자는 제외
