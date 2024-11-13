@@ -13,26 +13,92 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y jq gh
-      - name: Select Random Reviewers
+      - name: Select Random Reviewers Based on Jira Points
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_USER: ${{ secrets.JIRA_USER }}
+          JIRA_DOMAIN: "https://dream-no24.atlassian.net"  # Jira 도메인 설정
+          STORY_POINT_FIELD: "customfield_10040"  # Story Points 필드 ID
         run: |
+          # GitHub ID와 Jira ID 매핑 파일 로드
+          MAPPING_FILE="../data/github_jira_mapping.json"
+          
           # 7명의 조원 GitHub 아이디를 배열에 저장
           REVIEWERS=("Dream-no24" "depave" "this-yujunkim" "gmvolt" "Jangjimin9766" "HSHyun" "NaJhinY")
           
           # PR 작성자 아이디 가져오기
           PR_AUTHOR=$(jq --raw-output .pull_request.user.login "$GITHUB_EVENT_PATH")
           
-          # PR 작성자를 제외한 배열 생성
+          # 오늘 날짜 가져오기
+          TODAY=$(date +"%Y-%m-%d")
+
+          # 휴무일 정보를 로드하여 JSON 파싱
+          HOLIDAY_FILE="../data/holidays.json"
           FILTERED_REVIEWERS=()
+          
+          # 리뷰어 필터링: PR 작성자와 휴가자는 제외
           for reviewer in "${REVIEWERS[@]}"; do
             if [[ "$reviewer" != "$PR_AUTHOR" ]]; then
-              FILTERED_REVIEWERS+=("$reviewer")
+              if jq -e ".\"$reviewer\" | index(\"$TODAY\")" "$HOLIDAY_FILE" > /dev/null; then
+                echo "$reviewer is on holiday today ($TODAY)."
+              else
+                FILTERED_REVIEWERS+=("$reviewer")
+              fi
             fi
           done
           
-          # 배열에서 2명을 무작위로 선택
-          SELECTED_REVIEWERS=($(shuf -e "${FILTERED_REVIEWERS[@]}" -n 2))
+          # 각 리뷰어의 Jira ID와 Story Points 합산을 구하기
+          declare -A POINTS_BY_REVIEWER
+          TOTAL_POINTS=0
+          
+          for reviewer in "${FILTERED_REVIEWERS[@]}"; do
+            # GitHub ID를 Jira accountId로 변환
+            JIRA_ID=$(jq -r ".\"$reviewer\"" "$MAPPING_FILE")
+          
+            # Jira API로 리뷰어의 당일 할당 이슈 가져오기
+            ISSUES=$(curl -s -u "$JIRA_USER:$JIRA_API_TOKEN" \
+              -X GET -H "Content-Type: application/json" \
+              "${{ env.JIRA_DOMAIN }}/rest/api/3/search?jql=assignee=${JIRA_ID}%20AND%20status!=Done%20AND%20duedate>=$TODAY" \
+            )
+          
+            # 각 이슈의 Story Points 계산
+            REVIEWER_POINTS=0
+            ISSUE_COUNT=$(echo "$ISSUES" | jq -r '.issues | length')
+            for ((i=0; i<ISSUE_COUNT; i++)); do
+              ISSUE=$(echo "$ISSUES" | jq -r ".issues[$i]")
+              START_DATE=$(echo "$ISSUE" | jq -r ".fields.startdate")
+              DUE_DATE=$(echo "$ISSUE" | jq -r ".fields.duedate")
+          
+              # Story Points
+              POINTS=$(echo "$ISSUE" | jq -r ".fields.${{ env.STORY_POINT_FIELD }} // 0")
+          
+              # 일정에 따른 가중치 계산 (오늘의 일일 점수)
+              DAYS_TOTAL=$(( ( $(date -d "$DUE_DATE" +%s) - $(date -d "$START_DATE" +%s) ) / 86400 + 1 ))
+              DAILY_POINTS=$(echo "$POINTS / $DAYS_TOTAL" | bc -l)
+          
+              # 오늘이 작업 일정에 포함되면 REVIEWER_POINTS에 추가
+              if [[ "$START_DATE" <= "$TODAY" && "$TODAY" <= "$DUE_DATE" ]]; then
+                REVIEWER_POINTS=$(echo "$REVIEWER_POINTS + $DAILY_POINTS" | bc -l)
+              fi
+            done
+          
+            # 리뷰어의 총 포인트 기록 및 전체 포인트에 추가
+            POINTS_BY_REVIEWER[$reviewer]=$REVIEWER_POINTS
+            TOTAL_POINTS=$(echo "$TOTAL_POINTS + $REVIEWER_POINTS" | bc -l)
+          done
+          
+          # 확률 기반으로 리뷰어 선정
+          SELECTED_REVIEWERS=()
+          while [ "${#SELECTED_REVIEWERS[@]}" -lt 2 ]; do
+            for reviewer in "${!POINTS_BY_REVIEWER[@]}"; do
+              PROBABILITY=$(echo "${POINTS_BY_REVIEWER[$reviewer]} / $TOTAL_POINTS" | bc -l)
+              if (( $(echo "$RANDOM / 32767 < $PROBABILITY" | bc -l) )); then
+                SELECTED_REVIEWERS+=("$reviewer")
+              fi
+              [ "${#SELECTED_REVIEWERS[@]}" -ge 2 ] && break
+            done
+          done
           
           echo "선택된 리뷰어: ${SELECTED_REVIEWERS[@]}"
           
