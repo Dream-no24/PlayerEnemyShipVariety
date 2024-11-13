@@ -33,8 +33,16 @@ jobs:
           # 오늘 날짜 가져오기
           TODAY=$(date +"%Y-%m-%d")
 
-          # 휴무일 정보를 로드하여 JSON 파싱
-          HOLIDAY_FILE="${{ github.workspace }}/data/holidays.json"
+          # 휴가일을 하드코딩
+          declare -A HOLIDAYS
+          HOLIDAYS["Dream-no24"]="2024-11-12 2024-11-20"  # 예: Dream-no24의 휴가일
+          HOLIDAYS["depave"]="2024-11-15"
+          HOLIDAYS["this-yujunkim"]="2024-11-18 2024-11-19"
+          HOLIDAYS["gmvolt"]="2024-11-10"
+          HOLIDAYS["Jangjimin9766"]="2024-11-13"
+          HOLIDAYS["HSHyun"]="2024-11-25"
+          HOLIDAYS["NaJhinY"]="2024-11-17 2024-11-22"
+          
           FILTERED_REVIEWERS=()
           
           # 리뷰어 필터링: PR 작성자와 휴가자는 제외
