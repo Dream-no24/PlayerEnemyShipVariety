@@ -124,7 +124,11 @@ public class DrawManager {
 		BossARight1,
 		BossALeft2,
 		BossAMiddle2,
-		BossARight2
+		BossARight2,
+
+		BossB1,
+		BossB2,
+		BossB3
 
 	};
 
@@ -178,6 +182,9 @@ public class DrawManager {
 			spriteMap.put(SpriteType.BossALeft2, new boolean[12][24]);
 			spriteMap.put(SpriteType.BossAMiddle2, new boolean[12][24]);
 			spriteMap.put(SpriteType.BossARight2, new boolean[12][24]);
+			spriteMap.put(SpriteType.BossB1, new boolean[30][36]);
+			spriteMap.put(SpriteType.BossB2, new boolean[30][36]);
+			spriteMap.put(SpriteType.BossB3, new boolean[30][36]);
 
 			fileManager.loadSprite(spriteMap);
 			logger.info("Finished loading the sprites.");
