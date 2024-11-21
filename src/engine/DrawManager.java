@@ -185,9 +185,9 @@ public class DrawManager {
 			spriteMap.put(SpriteType.BossAMiddle2, new boolean[12][24]);
 			spriteMap.put(SpriteType.BossARight2, new boolean[12][24]);
 			// Turtle
-			spriteMap.put(SpriteType.BossB1, new boolean[30][36]);
-			spriteMap.put(SpriteType.BossB2, new boolean[30][36]);
-			spriteMap.put(SpriteType.BossB3, new boolean[30][36]);
+			spriteMap.put(SpriteType.BossB1, new boolean[150][180]);
+			spriteMap.put(SpriteType.BossB2, new boolean[150][180]);
+			spriteMap.put(SpriteType.BossB3, new boolean[150][180]);
 
 			fileManager.loadSprite(spriteMap);
 			logger.info("Finished loading the sprites.");
