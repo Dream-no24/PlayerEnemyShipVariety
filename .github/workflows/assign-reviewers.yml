@@ -35,11 +35,10 @@ jobs:
             fi
           done
           # PR 제목에서 '#M' 패턴 찾기
-          if [[ "$PR_TITLE" =~ \#M$ ]]; then
+          if [[ "$PR_TITLE" =~ #M$ ]]; then
             exit 0  # 워크플로우 종료 (자동 리뷰어 할당을 하지 않음)
-          fi
           # PR 제목에서 '#n' 패턴 찾기
-          if [[ "$PR_TITLE" =~ \#([0-9]+)$ ]]; then
+          elif [[ "$PR_TITLE" =~ #([0-9]+)$ ]]; then
             NUM_REVIEWERS=${BASH_REMATCH[1]}
             echo "지정된 리뷰어 수: $NUM_REVIEWERS"
           else
