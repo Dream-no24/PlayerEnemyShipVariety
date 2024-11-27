@@ -111,7 +111,8 @@ public class Ship extends Entity {
 					positionX + this.width / 2,
 					positionY,
 					growth.getBulletSpeed(), // Use PlayerGrowth for bullet speed
-					Bomb.getCanShoot()
+					Bomb.getCanShoot(),
+					Color.WHITE
 			);
 
 			// now can't shoot bomb

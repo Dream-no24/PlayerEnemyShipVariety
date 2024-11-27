@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import Sound_Operator.SoundManager;
+import inventory_develop.Bomb;
+import inventory_develop.NumberOfBullet;
 import screen.Screen;
 import engine.Cooldown;
 import engine.Core;
@@ -476,17 +478,25 @@ public class BossFormation implements Iterable<BossParts> {
      *         bullet to be reflected. But it is an eyewash.
      *
      */
-    public void reflect(final Set<PiercingBullet> bullets) {
+    public void reflect(final Set<PiercingBullet> bullets, int hitPositionX, int hitPositionY) {
         if (!shooters.isEmpty()) {
             BossParts shooter = this.shooters.get(this.shooters.size() / 2);
 //                sm = SoundManager.getInstance();
 //                sm.playES("Enemy_Gun_Shot_1_ES");
-            bullets.add(PiercingBulletPool.getPiercingBullet(
-                    shooter.getPositionX() + shooter.width / 2,
-                    shooter.getPositionY(),
-                    BULLET_SPEED,
-                    0,
-                    Color.RED));
+//            bullets.add(PiercingBulletPool.getPiercingBullet(
+//                    shooter.getPositionX() + shooter.width / 2,
+//                    shooter.getPositionY(),
+//                    BULLET_SPEED,
+//                    0,
+//                    Color.RED));
+            Set<PiercingBullet> newBullets = new NumberOfBullet().addBullet(
+                    hitPositionX,
+                    hitPositionY,
+                    BULLET_SPEED + 2,
+                    false,
+                    Color.RED
+                    );
+            bullets.addAll(newBullets);
         }
     }
 }
