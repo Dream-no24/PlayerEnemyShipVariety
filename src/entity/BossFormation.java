@@ -380,6 +380,7 @@ public class BossFormation implements Iterable<BossParts> {
      */
     public final void shoot(final Set<PiercingBullet> bullets) { // Edited by Enemy
         // For now, only ships in the bottom row are able to shoot.
+        System.out.println(this.shootingCooldown.checkFinished());
         if (!shooters.isEmpty()) { // Added by team Enemy
             int index = (int) (random() * this.shooters.size());
             BossParts shooter = this.shooters.get(index);
@@ -391,7 +392,8 @@ public class BossFormation implements Iterable<BossParts> {
                         shooter.getPositionX() + shooter.width / 2,
                         shooter.getPositionY(),
                         BULLET_SPEED,
-                        0)); // Edited by Enemy
+                        0,
+                        Color.WHITE)); // Edited by Enemy
             }
         }
     }
@@ -485,7 +487,8 @@ public class BossFormation implements Iterable<BossParts> {
                     shooter.getPositionX() + shooter.width / 2,
                     shooter.getPositionY(),
                     BULLET_SPEED,
-                    0));
+                    0,
+                    Color.RED));
         }
     }
 }
