@@ -380,7 +380,6 @@ public class BossFormation implements Iterable<BossParts> {
      */
     public final void shoot(final Set<PiercingBullet> bullets) { // Edited by Enemy
         // For now, only ships in the bottom row are able to shoot.
-        System.out.println(this.shootingCooldown.checkFinished());
         if (!shooters.isEmpty()) { // Added by team Enemy
             int index = (int) (random() * this.shooters.size());
             BossParts shooter = this.shooters.get(index);
@@ -432,10 +431,9 @@ public class BossFormation implements Iterable<BossParts> {
                 }
 
         // Updates the list of ships that can shoot the player.
-        if ((this.shooters.contains(destroyedShip) && !destroyedShip.spriteType.equals(SpriteType.BossACore1)) ||
-                (this.shooters.contains(destroyedShip) && !destroyedShip.spriteType.equals(SpriteType.BossACore2))) {
+        if (this.shooters.contains(destroyedShip) && destroyedShip.isDestroyed()) {
             this.shooters.remove(destroyedShip);
-            this.logger.info("Removed destroyed Arm from Boss.");
+            this.logger.info("Removed destroyed shooter of the Boss.");
         }
 
         this.shipCount -= count;
