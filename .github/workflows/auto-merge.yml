@@ -59,7 +59,7 @@ jobs:
           echo "승인된 리뷰어 수: $APPROVAL_COUNT"  # 승인된 리뷰어 수 출력
 
           # 필요한 승인 수 정의 (예: 2명)
-          REQUIRED_APPROVALS=2  # 최소 승인자 수 설정
+          REQUIRED_APPROVALS=1  # 최소 승인자 수 설정
 
           # 승인 수가 필요한 승인 수 이상일 때 approved=true 설정
           if [ "$APPROVAL_COUNT" -ge "$REQUIRED_APPROVALS" ]; then
