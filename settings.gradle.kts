@@ -11,4 +11,4 @@ plugins {
 }
 
 rootProject.name = "PlayerEnemyShipVariety"
-include("app")
+
