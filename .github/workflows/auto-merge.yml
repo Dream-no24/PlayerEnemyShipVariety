@@ -1,4 +1,4 @@
-name: 승인 조건 충족 시 PR 자동 병합
+name: 리뷰어 승인 확인 후 오토 Marge  # 워크플로우 이름 설정
 
 on:
   pull_request_review:
@@ -16,14 +16,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq gh  # JSON 파싱과 GitHub CLI 사용을 위한 jq와 gh 설치
 
-      - name: 코드 체크아웃
-        uses: actions/checkout@v4
+      - name: Check out the code
+        uses: actions/checkout@v4  # PR 코드 체크아웃
 
       - name: Install jq
         # jq 설치 (JSON 파싱 도구)
         run: sudo apt-get install -y jq
 
-      - name: PR 승인 상태 확인
+      - name: 리뷰어 승인 체크
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub API 접근을 위한 토큰 설정
         run: |
@@ -43,24 +43,11 @@ jobs:
           echo "PR 번호: $PR_NUMBER"  # PR 번호 출력하여 확인
           
           # PR 번호가 제대로 가져와지지 않았을 경우 에러 메시지 출력 및 종료
-
           if [ -z "$PR_NUMBER" ]; then
             echo "Error: PR 번호를 가져오지 못했습니다."
             exit 1
           fi
-
-          # 모든 리뷰어 정보 가져오기
-          REVIEWERS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/requested_reviewers" | jq '.reviewers | length')
-
-          echo "리뷰어 수: $REVIEWERS"
-
-          # 리뷰어가 0명일 경우 자동 병합 중단
-          if [ "$REVIEWERS" -eq 0 ]; then
-            echo "리뷰어가 없으므로 자동 병합을 수행하지 않습니다."
-            exit 0
-          fi
-
+          
           # 승인 상태를 확인하기 위해 모든 리뷰 정보 가져오기
           REVIEWS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews")
@@ -72,7 +59,7 @@ jobs:
           echo "승인된 리뷰어 수: $APPROVAL_COUNT"  # 승인된 리뷰어 수 출력
 
           # 필요한 승인 수 정의 (예: 2명)
-          REQUIRED_APPROVALS=$REVIEWERS
+          REQUIRED_APPROVALS=2  # 최소 승인자 수 설정
 
           # 승인 수가 필요한 승인 수 이상일 때 approved=true 설정
           if [ "$APPROVAL_COUNT" -ge "$REQUIRED_APPROVALS" ]; then
@@ -83,7 +70,7 @@ jobs:
             echo "approved=false" >> $GITHUB_ENV  # 환경 변수 approved=false 설정
           fi
 
-      - name: Merge the Pull Request
+      - name: Merge PR
         if: env.approved == 'true' && github.base_ref != 'master'  # 승인 조건 충족 및 master 브랜치가 아닐 때만 실행
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub API 접근을 위한 토큰 설정
