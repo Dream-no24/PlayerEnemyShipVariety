@@ -178,6 +178,12 @@ public class BossFormation implements Iterable<BossParts> {
                 case BossALeft2:
                 case BossARight1:
                 case BossARight2:
+                case BossABorderCore1:
+                case BossABorderCore2:
+                case BossABorderLeft1:
+                case BossABorderLeft2:
+                case BossABorderRight1:
+                case BossABorderRight2:
                     BossWidth = 24;
                     BossHeight = 48;
                     break;
