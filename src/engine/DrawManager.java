@@ -128,8 +128,9 @@ public class DrawManager {
 
 		BossBCore1,
 		BossBCore2,
-		BossBCoreDamaged
-
+		BossBCoreDamaged,
+		BossBCoreBorder1,
+		BossBCoreBorder2
 	};
 
 	/**
@@ -187,6 +188,8 @@ public class DrawManager {
 			spriteMap.put(SpriteType.BossBCore1, new boolean[150][180]);
 			spriteMap.put(SpriteType.BossBCore2, new boolean[150][180]);
 			spriteMap.put(SpriteType.BossBCoreDamaged, new boolean[150][180]);
+			spriteMap.put(SpriteType.BossBCoreBorder1, new boolean[150][180]);
+			spriteMap.put(SpriteType.BossBCoreBorder2, new boolean[150][180]);
 
 			fileManager.loadSprite(spriteMap);
 			logger.info("Finished loading the sprites.");
