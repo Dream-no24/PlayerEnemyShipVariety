@@ -389,7 +389,7 @@ public class BossFormation implements Iterable<BossParts> {
                 sm.playES("Enemy_Gun_Shot_1_ES");
                 bullets.add(PiercingBulletPool.getPiercingBullet( // Edited by Enemy
                         shooter.getPositionX() + shooter.width / 2,
-                        shooter.getPositionY(),
+                        shooter.getPositionY() + shooter.height,
                         BULLET_SPEED,
                         0)); // Edited by Enemy
             }
