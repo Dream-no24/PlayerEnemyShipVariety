@@ -13,11 +13,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y jq gh
+
       - name: Select Random Reviewers
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
         run: |
           # PR 정보 가져오기
           PR_TITLE="${{ github.event.pull_request.title }}"
@@ -39,7 +40,9 @@ jobs:
 
           # PR 작성자를 제외한 리뷰어 필터링
           FILTERED_REVIEWERS=$(echo "$REVIEWER_DATA" | jq -c --arg PR_AUTHOR "$PR_AUTHOR" \
-          '.reviewers | map(select(.github != $PR_AUTHOR))')
+            '.reviewers | map(select(.github != $PR_AUTHOR))')
+
+          echo "필터링된 리뷰어: $FILTERED_REVIEWERS"
 
           # PR 제목에서 '#M' 패턴 찾기
           if [[ "$PR_TITLE" =~ \#M$ ]]; then
@@ -57,14 +60,12 @@ jobs:
           fi
 
           # 무작위 리뷰어 선택
-          SELECTED_REVIEWERS=$(echo "$FILTERED_REVIEWERS" | jq -c --argjson NUM_REVIEWERS $NUM_REVIEWERS \
-          'shuffle | .[:$NUM_REVIEWERS]')
+          SELECTED_REVIEWERS=$(echo "$FILTERED_REVIEWERS" | jq -r '.[].github' | shuf -n "$NUM_REVIEWERS")
 
           echo "선택된 리뷰어: $SELECTED_REVIEWERS"
 
           # GitHub 리뷰어 JSON 생성
-          GITHUB_REVIEWERS=$(echo "$SELECTED_REVIEWERS" | jq -r '.[].github' | jq -R . | jq -s .)
-
+          GITHUB_REVIEWERS=$(echo "$SELECTED_REVIEWERS" | jq -R . | jq -s .)
           echo "GitHub 리뷰어: $GITHUB_REVIEWERS"
 
           # PR에 리뷰어 지정
@@ -76,17 +77,20 @@ jobs:
             -d "{\"reviewers\": $GITHUB_REVIEWERS}"
 
           # 디스코드 및 슬랙 멘션 생성
-          DISCORD_MENTIONS=$(echo "$SELECTED_REVIEWERS" | jq -r '.[].discord | "<@" + . + ">"' | tr '\n' ' ')
-          SLACK_MENTIONS=$(echo "$SELECTED_REVIEWERS" | jq -r '.[].slack' | tr '\n' ' ')
+          DISCORD_MENTIONS=$(echo "$SELECTED_REVIEWERS" | jq -r --argjson DATA "$REVIEWER_DATA" \
+            'split("\n") | map(select(length > 0) | $DATA.reviewers[] | select(.github == .) | .discord) | map("<@" + . + ">") | join(" ")')
+
+          SLACK_MENTIONS=$(echo "$SELECTED_REVIEWERS" | jq -r --argjson DATA "$REVIEWER_DATA" \
+            'split("\n") | map(select(length > 0) | $DATA.reviewers[] | select(.github == .) | .slack) | join(" ")')
 
           # 디스코드 알림 전송
           DISCORD_MESSAGE="리뷰어로 지정되었습니다!\nPR 제목: $PR_TITLE\nPR 링크: $PR_LINK\n리뷰어: ${DISCORD_MENTIONS}"
           curl -H "Content-Type: application/json" \
                -d "{\"content\": \"$DISCORD_MESSAGE\"}" \
-               $DISCORD_WEBHOOK
+               $DISCORD_WEBHOOK_URL || echo "Discord 알림 전송 실패"
 
           # 슬랙 알림 전송
           SLACK_MESSAGE="리뷰어로 지정되었습니다!\nPR 제목: $PR_TITLE\nPR 링크: $PR_LINK\n리뷰어: ${SLACK_MENTIONS}"
           curl -H "Content-Type: application/json" \
                -d "{\"text\": \"$SLACK_MESSAGE\"}" \
-               $SLACK_WEBHOOK
+               $SLACK_WEBHOOK_URL || echo "Slack 알림 전송 실패"
