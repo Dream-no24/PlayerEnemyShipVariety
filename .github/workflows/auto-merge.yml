@@ -1,4 +1,4 @@
-name: Auto Merge PR on Approval  # 워크플로우 이름 설정
+name: 리뷰어 승인 확인 후 오토 Marge  # 워크플로우 이름 설정
 
 on:
   pull_request_review:
@@ -23,7 +23,7 @@ jobs:
         # jq 설치 (JSON 파싱 도구)
         run: sudo apt-get install -y jq
 
-      - name: Check PR Approval Status
+      - name: 리뷰어 승인 체크
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub API 접근을 위한 토큰 설정
         run: |
@@ -70,7 +70,7 @@ jobs:
             echo "approved=false" >> $GITHUB_ENV  # 환경 변수 approved=false 설정
           fi
 
-      - name: Merge the Pull Request
+      - name: Merge PR
         if: env.approved == 'true' && github.base_ref != 'master'  # 승인 조건 충족 및 master 브랜치가 아닐 때만 실행
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub API 접근을 위한 토큰 설정

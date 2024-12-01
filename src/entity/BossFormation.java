@@ -154,6 +154,10 @@ public class BossFormation implements Iterable<BossParts> {
         this.positionY = INIT_POS_Y;
         this.separationDistance = bossVariety.getSeparationDistance();
 
+        int bossWidth = 12 * 2;  // basic width
+        int bossHeight = 24 * 2; // basic heightdfkhfkdjkfdhklfdskdfjklsfdjlkfdsjlksdfkjlsfdkjlsfdlkjsfdjlk
+
+
         this.positionX = INIT_POS_X;
         this.positionY = INIT_POS_Y;
 
@@ -165,7 +169,31 @@ public class BossFormation implements Iterable<BossParts> {
             List<BossParts> column = new ArrayList<>();
             SpriteType spriteType = spriteTypes.get(i % spriteTypes.size());
 
-            BossParts bossPart = new BossParts(positionX + (separationDistance * i), positionY, spriteType, healthPerPart);
+            int BossWidth = 0, BossHeight = 0;
+
+            switch (spriteType) {
+                case BossACore1:
+                case BossACore2:
+                case BossALeft1:
+                case BossALeft2:
+                case BossARight1:
+                case BossARight2:
+                    BossWidth = 24;
+                    BossHeight = 48;
+                    break;
+                case BossBCore1:
+                case BossBCore2:
+                case BossBCoreDamaged:
+                    BossWidth = 150;
+                    BossHeight = 180;
+                    break;
+                default:
+                    BossWidth = 20;
+                    BossHeight = 20;
+                    break;
+            }
+
+            BossParts bossPart = new BossParts(positionX + (separationDistance * i), positionY, BossWidth, BossHeight, spriteType, healthPerPart);
             column.add(bossPart);
 
             shooters.add(bossPart);
@@ -223,11 +251,8 @@ public class BossFormation implements Iterable<BossParts> {
 
         int movementX = 0;
         int movementY = 0;
-        double remainingProportion = (double) this.shipCount
-                / (this.nShipsHigh * this.nShipsWide);
-        this.movementSpeed = (int) (Math.pow(remainingProportion, 2)
-                * this.baseSpeed);
-        this.movementSpeed += MINIMUM_SPEED;
+
+        this.movementSpeed = this.baseSpeed + MINIMUM_SPEED;
 
         movementInterval++;
         if (movementInterval >= this.movementSpeed) {
@@ -380,6 +405,7 @@ public class BossFormation implements Iterable<BossParts> {
     public final int[] destroy(final BossParts destroyedShip) {
         int count = 0;	// number of destroyed enemy
         int point = 0;  // point of destroyed enemy
+        boolean isCoreDestroyed = destroyedShip.getSpriteType() == SpriteType.BossACore1 || destroyedShip.getSpriteType() == SpriteType.BossACore2;
 
         for (List<BossParts> column : this.bossPartsFormation)
             for (int i = 0; i < column.size(); i++)

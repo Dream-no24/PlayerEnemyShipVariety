@@ -48,10 +48,9 @@ public class BossParts extends Entity {
 	 * @param spriteType
 	 *            Sprite type, image corresponding to the part of the Boss.
 	 */
-	public BossParts(final int positionX, final int positionY,
+	public BossParts(final int positionX, final int positionY, int BossWidth, int BossHeight,
 					 final SpriteType spriteType, int hp) {
-
-		super(positionX, positionY, 12 * 2, 24 * 2, determineColor(hp, hp));
+		super(positionX, positionY, BossWidth * 2, BossHeight * 2, determineColor(hp, hp));
 
 		this.hp = hp;
 		this.maxHp = hp;

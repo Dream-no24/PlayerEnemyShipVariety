@@ -1,4 +1,4 @@
-name: Assign Random Reviewers
+name: 무작위 리뷰어 할당
 
 on:
   pull_request:
@@ -17,6 +17,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # PR 제목 가져오기
+          PR_TITLE=$(jq --raw-output .pull_request.title "$GITHUB_EVENT_PATH")
+          echo "PR 제목: $PR_TITLE"
+          
           # 7명의 조원 GitHub 아이디를 배열에 저장
           REVIEWERS=("Dream-no24" "depave" "this-yujunkim" "gmvolt" "Jangjimin9766" "HSHyun" "NaJhinY")
           
@@ -30,9 +34,20 @@ jobs:
               FILTERED_REVIEWERS+=("$reviewer")
             fi
           done
-          
-          # 배열에서 2명을 무작위로 선택
-          SELECTED_REVIEWERS=($(shuf -e "${FILTERED_REVIEWERS[@]}" -n 2))
+          # PR 제목에서 '#M' 패턴 찾기
+          if [[ "$PR_TITLE" =~ \#M$ ]]; then
+            exit 0  # 워크플로우 종료 (자동 리뷰어 할당을 하지 않음)
+          fi
+          # PR 제목에서 '#n' 패턴 찾기
+          if [[ "$PR_TITLE" =~ \#([0-9]+)$ ]]; then
+            NUM_REVIEWERS=${BASH_REMATCH[1]}
+            echo "지정된 리뷰어 수: $NUM_REVIEWERS"
+          else
+            NUM_REVIEWERS=2
+            echo "리뷰어 수가 명시되지 않았으므로 기본값 $NUM_REVIEWERS명을 선택합니다."
+          fi
+          # 배열에서 n명을 무작위로 선택
+          SELECTED_REVIEWERS=($(shuf -e "${FILTERED_REVIEWERS[@]}" -n "$NUM_REVIEWERS"))
           
           echo "선택된 리뷰어: ${SELECTED_REVIEWERS[@]}"
           

@@ -177,16 +177,16 @@ public class DrawManager {
 			spriteMap.put(SpriteType.ItemSpeedSlow, new boolean[9][9]);
 
 			// Crab
-			spriteMap.put(SpriteType.BossALeft1, new boolean[12][24]);
-			spriteMap.put(SpriteType.BossACore1, new boolean[12][24]);
-			spriteMap.put(SpriteType.BossARight1, new boolean[12][24]);
-			spriteMap.put(SpriteType.BossALeft2, new boolean[12][24]);
-			spriteMap.put(SpriteType.BossACore2, new boolean[12][24]);
-			spriteMap.put(SpriteType.BossARight2, new boolean[12][24]);
+			spriteMap.put(SpriteType.BossALeft1, new boolean[24][48]);
+			spriteMap.put(SpriteType.BossACore1, new boolean[24][48]);
+			spriteMap.put(SpriteType.BossARight1, new boolean[24][48]);
+			spriteMap.put(SpriteType.BossALeft2, new boolean[24][48]);
+			spriteMap.put(SpriteType.BossACore2, new boolean[24][48]);
+			spriteMap.put(SpriteType.BossARight2, new boolean[24][48]);
 			// Turtle
-			spriteMap.put(SpriteType.BossBCore1, new boolean[30][36]);
-			spriteMap.put(SpriteType.BossBCore2, new boolean[30][36]);
-			spriteMap.put(SpriteType.BossBCoreDamaged, new boolean[30][36]);
+			spriteMap.put(SpriteType.BossBCore1, new boolean[150][180]);
+			spriteMap.put(SpriteType.BossBCore2, new boolean[150][180]);
+			spriteMap.put(SpriteType.BossBCoreDamaged, new boolean[150][180]);
 
 			fileManager.loadSprite(spriteMap);
 			logger.info("Finished loading the sprites.");

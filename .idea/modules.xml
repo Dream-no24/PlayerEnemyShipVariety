@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Invaders-SDP.iml" filepath="$PROJECT_DIR$/Invaders-SDP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PlayerEnemyShipVariety.iml" filepath="$PROJECT_DIR$/.idea/modules/PlayerEnemyShipVariety.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PlayerEnemyShipVariety.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PlayerEnemyShipVariety.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PlayerEnemyShipVariety.app.test.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PlayerEnemyShipVariety.app.test.iml" />
     </modules>
   </component>
 </project>
