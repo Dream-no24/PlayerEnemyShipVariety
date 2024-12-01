@@ -24,7 +24,8 @@ jobs:
           PR_TITLE="${{ github.event.pull_request.title }}"
           PR_AUTHOR="${{ github.event.pull_request.user.login }}"
           PR_LINK="${{ github.event.pull_request.html_url }}"
-
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          
           # JSON 형식으로 리뷰어 데이터 정의
           REVIEWER_DATA='{
             "reviewers": [
@@ -37,11 +38,9 @@ jobs:
               {"github": "NaJhinY", "discord": "309497537696628746", "slack": "@U081N2GPY8H"}
             ]
           }'
-
           # PR 작성자를 제외한 리뷰어 필터링
           FILTERED_REVIEWERS=$(echo "$REVIEWER_DATA" | jq -c --arg PR_AUTHOR "$PR_AUTHOR" \
             '.reviewers | map(select(.github != $PR_AUTHOR))')
-
           echo "필터링된 리뷰어: $FILTERED_REVIEWERS"
 
           # PR 제목에서 '#M' 패턴 찾기
@@ -61,7 +60,6 @@ jobs:
 
           # 무작위 리뷰어 선택
           SELECTED_REVIEWERS=$(echo "$FILTERED_REVIEWERS" | jq -r '.[].github' | shuf -n "$NUM_REVIEWERS")
-
           echo "선택된 리뷰어: $SELECTED_REVIEWERS"
 
           # GitHub 리뷰어 JSON 생성
@@ -69,19 +67,20 @@ jobs:
           echo "GitHub 리뷰어: $GITHUB_REVIEWERS"
 
           # PR에 리뷰어 지정
-          PR_NUMBER="${{ github.event.pull_request.number }}"
           curl -s -H "Authorization: token $GITHUB_TOKEN" \
-            -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/requested_reviewers" \
-            -d "{\"reviewers\": $GITHUB_REVIEWERS}"
+               -X POST \
+               -H "Accept: application/vnd.github.v3+json" \
+               "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/requested_reviewers" \
+               -d "{\"reviewers\": $GITHUB_REVIEWERS}"
 
           # 디스코드 및 슬랙 멘션 생성
-          DISCORD_MENTIONS=$(echo "$SELECTED_REVIEWERS" | jq -r --argjson DATA "$REVIEWER_DATA" \
-            'split("\n") | map(select(length > 0) | $DATA.reviewers[] | select(.github == .) | .discord) | map("<@" + . + ">") | join(" ")')
-
-          SLACK_MENTIONS=$(echo "$SELECTED_REVIEWERS" | jq -r --argjson DATA "$REVIEWER_DATA" \
-            'split("\n") | map(select(length > 0) | $DATA.reviewers[] | select(.github == .) | .slack) | join(" ")')
+          DISCORD_MENTIONS=$(echo "$FILTERED_REVIEWERS" | jq -r --argjson SELECTED "$SELECTED_REVIEWERS" \
+            '.[] | select(.github as $github | $SELECTED | index($github)) | "<@" + .discord + ">"' | tr '\n' ' ')
+          SLACK_MENTIONS=$(echo "$FILTERED_REVIEWERS" | jq -r --argjson SELECTED "$SELECTED_REVIEWERS" \
+            '.[] | select(.github as $github | $SELECTED | index($github)) | .slack' | tr '\n' ' ')
+          
+          echo "Discord 멘션: $DISCORD_MENTIONS"
+          echo "Slack 멘션: $SLACK_MENTIONS"
 
           # 디스코드 알림 전송
           DISCORD_MESSAGE="리뷰어로 지정되었습니다!\nPR 제목: $PR_TITLE\nPR 링크: $PR_LINK\n리뷰어: ${DISCORD_MENTIONS}"
