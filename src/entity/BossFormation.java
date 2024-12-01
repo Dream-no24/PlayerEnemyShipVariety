@@ -169,6 +169,20 @@ public class BossFormation implements Iterable<BossParts> {
             List<BossParts> column = new ArrayList<>();
             SpriteType spriteType = spriteTypes.get(i % spriteTypes.size());
 
+            switch (spriteType) {
+                case BossBCore1:
+                case BossBCore2:
+                case BossBCoreDamaged:
+                case BossBCoreBorder1:
+                case BossBCoreBorder2:
+                    this.positionX = 20;
+                    this.positionY = 0;
+                    break;
+                default:
+                    break;
+            }
+
+
             int BossWidth = 0, BossHeight = 0;
 
             switch (spriteType) {
