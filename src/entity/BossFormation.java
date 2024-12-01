@@ -398,6 +398,7 @@ public class BossFormation implements Iterable<BossParts> {
             for (List<BossParts> column : this.bossPartsFormation)
                 for (int i = 0; i < column.size(); i++) {
                     column.get(i).setHp(0);
+                    this.scoreManager.addScore(column.get(i).getPointValue());
                     column.get(i).destroy();
                 }
         }
