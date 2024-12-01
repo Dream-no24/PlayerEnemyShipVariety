@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PlayerEnemyShipVariety.iml" filepath="$PROJECT_DIR$/.idea/modules/PlayerEnemyShipVariety.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/PlayerEnemyShipVariety.main.iml" filepath="$PROJECT_DIR$/.idea/modules/PlayerEnemyShipVariety.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/PlayerEnemyShipVariety.test.iml" filepath="$PROJECT_DIR$/.idea/modules/PlayerEnemyShipVariety.test.iml" />
     </modules>
