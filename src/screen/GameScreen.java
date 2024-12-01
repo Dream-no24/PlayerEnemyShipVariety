@@ -746,13 +746,6 @@ public class GameScreen extends Screen {
 								recyclable.add(bullet);
 							}
 						}
-						// Added by team Enemy.
-						// Enemy killed by Explosive enemy gives points too
-						if (bossParts.isChainExploded()) {
-							this.score += bossParts.getPointValue();
-							this.shipsDestroyed++;
-							bossParts.setChainExploded(false); // resets enemy's chain explosion state.
-						}
 					}
 
 				}

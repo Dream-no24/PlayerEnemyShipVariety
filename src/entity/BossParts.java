@@ -24,6 +24,8 @@ public class BossParts extends Entity {
 	private Cooldown bossBActiveSkillCooldown;
 	private Cooldown bossBDeActiveSkillCooldown;
 	private boolean isDestroyed;
+	private boolean isCore;
+	private boolean isBoss;
 	private boolean isCoreDestroyed;
 	/** Values of the part of the Boss, in points, when destroyed. */
 	private int pointValue;
@@ -58,6 +60,8 @@ public class BossParts extends Entity {
 		this.bossBActiveSkillCooldown = Core.getVariableCooldown(15000,10000);
 		this.bossBDeActiveSkillCooldown = Core.getCooldown(4000);
 		this.isDestroyed = false;
+		this.isCore = spriteType.toString().contains("Core");
+		this.isBoss = spriteType.toString().contains("Boss");
 		this.isCoreDestroyed = false;
 		this.speedMultiplier = 1.0; // default 1.0
 		this.defaultSpeedMultiplier = 1.0;
@@ -212,11 +216,11 @@ public class BossParts extends Entity {
 	public final void destroy() {
 		this.isDestroyed = true;
 		sm = SoundManager.getInstance();
-		if(this.spriteType.toString().contains("Core")){
+		if(this.isCore){
 			this.isCoreDestroyed = true;
 			sm.playES("boss_die");
 		}
-		else if(this.spriteType.toString().contains("Boss")){
+		else if(this.isBoss){
 			sm.playES("boss_part_destroy");
 		}
 		else {
@@ -234,6 +238,10 @@ public class BossParts extends Entity {
 	public final boolean isDestroyed() {
 		return this.isDestroyed;
 	}
+
+	public final boolean isCore() {return this.isCore;}
+
+	public final boolean isBoss() {return this.isBoss;}
 
 	public final boolean isCoreDestroyed(){return this.isCoreDestroyed;}
 
@@ -271,31 +279,6 @@ public class BossParts extends Entity {
 
 	public void resetSpeedMultiplier() {
 		this.speedMultiplier = this.defaultSpeedMultiplier;
-	}
-
-	/**
-	 * Destroys ship, causing a chain explode.
-	 */
-	public final void chainExplode() { // Added by team Enemy
-		destroy();
-		setChainExploded(true);
-		setHp(0);
-	}
-
-	/**
-	 * Checks if the ship has been chain exploded.
-	 *
-	 * @return True if the ship has been chain exploded.
-	 */
-	public final boolean isChainExploded() {
-		return this.isChainExploded;
-	}
-
-	/**
-	 * Setter for enemy ship's isChainExploded to false.
-	 */
-	public final void setChainExploded(boolean isChainExploded) {
-		this.isChainExploded = isChainExploded;
 	}
 
 
