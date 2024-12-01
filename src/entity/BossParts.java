@@ -24,6 +24,7 @@ public class BossParts extends Entity {
 	private Cooldown bossBActiveSkillCooldown;
 	private Cooldown bossBDeActiveSkillCooldown;
 	private boolean isDestroyed;
+	private boolean isCoreDestroyed;
 	/** Values of the part of the Boss, in points, when destroyed. */
 	private int pointValue;
 
@@ -57,6 +58,7 @@ public class BossParts extends Entity {
 		this.bossBActiveSkillCooldown = Core.getVariableCooldown(15000,10000);
 		this.bossBDeActiveSkillCooldown = Core.getCooldown(4000);
 		this.isDestroyed = false;
+		this.isCoreDestroyed = false;
 		this.speedMultiplier = 1.0; // default 1.0
 		this.defaultSpeedMultiplier = 1.0;
 
@@ -211,6 +213,7 @@ public class BossParts extends Entity {
 		this.isDestroyed = true;
 		sm = SoundManager.getInstance();
 		if(this.spriteType.toString().contains("Core")){
+			this.isCoreDestroyed = true;
 			sm.playES("boss_die");
 		}
 		else if(this.spriteType.toString().contains("Boss")){
@@ -231,6 +234,8 @@ public class BossParts extends Entity {
 	public final boolean isDestroyed() {
 		return this.isDestroyed;
 	}
+
+	public final boolean isCoreDestroyed(){return this.isCoreDestroyed;}
 
 	/**
 	 * Getter for the Hp of this part of the Boss.

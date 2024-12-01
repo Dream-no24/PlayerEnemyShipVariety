@@ -711,7 +711,7 @@ public class GameScreen extends Screen {
 								isShell = true;
 							}
 							else {
-								int CntAndPnt[] = this.bossFormation.destroy(bossParts, false);    // team Inventory
+								int CntAndPnt[] = this.bossFormation.destroy(bossParts);    // team Inventory
 								this.shipsDestroyed += CntAndPnt[0];
 								int feverScore = bossParts.getPointValue();
 
