@@ -25,7 +25,7 @@ jobs:
           PR_AUTHOR="${{ github.event.pull_request.user.login }}"
           PR_LINK="${{ github.event.pull_request.html_url }}"
           PR_NUMBER="${{ github.event.pull_request.number }}"
-          
+
           # JSON 형식으로 리뷰어 데이터 정의
           REVIEWER_DATA='{
             "reviewers": [
@@ -38,6 +38,7 @@ jobs:
               {"github": "NaJhinY", "discord": "309497537696628746", "slack": "@U081N2GPY8H"}
             ]
           }'
+
           # PR 작성자를 제외한 리뷰어 필터링
           FILTERED_REVIEWERS=$(echo "$REVIEWER_DATA" | jq -c --arg PR_AUTHOR "$PR_AUTHOR" \
             '.reviewers | map(select(.github != $PR_AUTHOR))')
@@ -59,11 +60,12 @@ jobs:
           fi
 
           # 무작위 리뷰어 선택
-          SELECTED_REVIEWERS=$(echo "$FILTERED_REVIEWERS" | jq -r '.[].github' | shuf -n "$NUM_REVIEWERS")
+          SELECTED_REVIEWERS=$(echo "$FILTERED_REVIEWERS" | jq -c --argjson NUM_REVIEWERS "$NUM_REVIEWERS" \
+            'sort_by(.github) | .[:$NUM_REVIEWERS]')
           echo "선택된 리뷰어: $SELECTED_REVIEWERS"
 
           # GitHub 리뷰어 JSON 생성
-          GITHUB_REVIEWERS=$(echo "$SELECTED_REVIEWERS" | jq -R . | jq -s .)
+          GITHUB_REVIEWERS=$(echo "$SELECTED_REVIEWERS" | jq -r '.[].github' | jq -R . | jq -s .)
           echo "GitHub 리뷰어: $GITHUB_REVIEWERS"
 
           # PR에 리뷰어 지정
@@ -74,11 +76,11 @@ jobs:
                -d "{\"reviewers\": $GITHUB_REVIEWERS}"
 
           # 디스코드 및 슬랙 멘션 생성
-          DISCORD_MENTIONS=$(echo "$FILTERED_REVIEWERS" | jq -r --argjson SELECTED "$SELECTED_REVIEWERS" \
-            '.[] | select(.github as $github | $SELECTED | index($github)) | "<@" + .discord + ">"' | tr '\n' ' ')
-          SLACK_MENTIONS=$(echo "$FILTERED_REVIEWERS" | jq -r --argjson SELECTED "$SELECTED_REVIEWERS" \
-            '.[] | select(.github as $github | $SELECTED | index($github)) | .slack' | tr '\n' ' ')
-          
+          DISCORD_MENTIONS=$(echo "$SELECTED_REVIEWERS" | jq -r \
+            '.[] | "<@" + .discord + ">"' | tr '\n' ' ')
+          SLACK_MENTIONS=$(echo "$SELECTED_REVIEWERS" | jq -r \
+            '.[] | .slack' | tr '\n' ' ')
+
           echo "Discord 멘션: $DISCORD_MENTIONS"
           echo "Slack 멘션: $SLACK_MENTIONS"
 
