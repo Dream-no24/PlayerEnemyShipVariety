@@ -29,13 +29,13 @@ jobs:
           # JSON 형식으로 리뷰어 데이터 정의
           REVIEWER_DATA='{
             "reviewers": [
-              {"github": "Dream-no24", "discord": "543412284823830542", "slack": "@U0815U6D5FA"},
-              {"github": "depave", "discord": "390393061462638592", "slack": "@U081Q5QNJQY"},
-              {"github": "this-yujunkim", "discord": "345678901234567890", "slack": "@U080VNUFAB0"},
-              {"github": "gmvolt", "discord": "456789012345678901", "slack": "@U080YD1SB9B"},
-              {"github": "Jangjimin9766", "discord": "622289999471181824", "slack": "@U081BSNUM6Y"},
-              {"github": "HSHyun", "discord": "1234432353859010600", "slack": "@U080LVALFHV"},
-              {"github": "NaJhinY", "discord": "309497537696628746", "slack": "@U081N2GPY8H"}
+              {"github": "Dream-no24", "discord": "543412284823830542", "slack": "@경주"},
+              {"github": "depave", "discord": "390393061462638592", "slack": "@곽재민"},
+              {"github": "this-yujunkim", "discord": "345678901234567890", "slack": "@김유준"},
+              {"github": "gmvolt", "discord": "456789012345678901", "slack": "@김정우"},
+              {"github": "Jangjimin9766", "discord": "622289999471181824", "slack": "@장지민"},
+              {"github": "HSHyun", "discord": "1234432353859010600", "slack": "@현승현"},
+              {"github": "NaJhinY", "discord": "309497537696628746", "slack": "@나건엽"}
             ]
           }'
 
