@@ -177,7 +177,7 @@ public class BossFormation implements Iterable<BossParts> {
                 case BossBCoreBorder1:
                 case BossBCoreBorder2:
                     this.positionX = 20;
-                    this.positionY = 0;
+                    this.positionY = -150;
                     break;
                 default:
                     break;
