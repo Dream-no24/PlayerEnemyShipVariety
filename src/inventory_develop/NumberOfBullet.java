@@ -1,7 +1,7 @@
 package inventory_develop;
 
-import Enemy.PiercingBullet;
-import Enemy.PiercingBulletPool;
+import enemy.PiercingBullet;
+import enemy.PiercingBulletPool;
 import engine.Core;
 
 import java.awt.*;

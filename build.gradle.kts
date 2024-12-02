@@ -17,13 +17,17 @@ repositories {
 
 dependencies {
     // Use JUnit Jupiter for testing.
-    testImplementation(libs.junit.jupiter)
+//    testImplementation(libs.junit.jupiter)
+//    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
+    testImplementation("org.mockito:mockito-core:4.2.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.11.3")
 
     // This dependency is used by the application.
     implementation(libs.guava)
 }
+
 
 // Apply a specific Java toolchain to ease working on different environments.
 java {
@@ -34,7 +38,24 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "org.example.App"
+    mainClass = "engine.Core"
+}
+
+sourceSets {
+    main {
+        java {
+            setSrcDirs(listOf("src")) // 모든 실행 소스를 포함
+            exclude("**/Test/**")    // 테스트 디렉토리는 제외
+        }
+        resources {
+            setSrcDirs(listOf("res")) // 리소스 디렉토리 설정
+        }
+    }
+    test {
+        java {
+            setSrcDirs(listOf("src/Test")) // 테스트 코드 경로 설정
+        }
+    }
 }
 
 tasks.named<Test>("test") {

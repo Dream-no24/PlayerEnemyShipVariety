@@ -1,4 +1,4 @@
-package CtrlS;
+package ctrlS;
 
 import screen.Screen;
 import engine.GameState;

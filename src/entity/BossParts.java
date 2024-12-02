@@ -1,6 +1,6 @@
 package entity;
 
-import Sound_Operator.SoundManager;
+import sound_Operator.SoundManager;
 import engine.Cooldown;
 import engine.Core;
 import engine.DrawManager.SpriteType;

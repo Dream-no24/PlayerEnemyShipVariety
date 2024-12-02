@@ -1,4 +1,4 @@
-package HUDTeam;
+package hudTeam;
 
 import engine.DrawManager;
 import screen.GameScreen;

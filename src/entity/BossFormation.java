@@ -8,16 +8,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import Sound_Operator.SoundManager;
-import inventory_develop.Bomb;
-import inventory_develop.NumberOfBullet;
+import sound_Operator.SoundManager;
 import screen.Screen;
 import engine.Cooldown;
 import engine.Core;
 import engine.DrawManager;
 import engine.DrawManager.SpriteType;
 import engine.GameSettings;
-import Enemy.*;
+import enemy.*;
 import clove.ScoreManager;
 
 import static java.lang.Math.random;

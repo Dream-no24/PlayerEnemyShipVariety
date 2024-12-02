@@ -6,13 +6,13 @@ import java.util.Collections;
 import java.util.List;
 
 import clove.Statistics; //Team Clove
-import HUDTeam.DrawAchievementHud;
-import HUDTeam.DrawManagerImpl;
+import hudTeam.DrawAchievementHud;
+import hudTeam.DrawManagerImpl;
 import engine.Cooldown;
 import engine.Core;
 import engine.GameState;
 import engine.Score;
-import Enemy.PlayerGrowth;
+import enemy.PlayerGrowth;
 import inventory_develop.NumberOfBullet;
 
 /**

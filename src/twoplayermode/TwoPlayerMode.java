@@ -7,21 +7,21 @@ import java.awt.event.KeyEvent;
 import java.util.Set;
 import java.util.HashSet;
 
-import Enemy.*;
-import HUDTeam.DrawManagerImpl;
+import enemy.*;
+import hudTeam.DrawManagerImpl;
 import screen.GameScreen;
 import engine.GameState;
 import engine.GameSettings;
 import entity.Ship;
 import engine.DrawManager;
-import Enemy.PiercingBullet;
+import enemy.PiercingBullet;
 import entity.Bullet;
 import entity.BulletPool;
 import entity.EnemyShip;
 import entity.Obstacle;
 import inventory_develop.ItemBarrierAndHeart;
 import inventory_develop.FeverTimeItem;
-import Sound_Operator.SoundManager;
+import sound_Operator.SoundManager;
 
 
 public class TwoPlayerMode extends GameScreen {
