@@ -173,9 +173,9 @@ public class BossFormation implements Iterable<BossParts> {
             switch (spriteType) {
                 case BossBCore1:
                 case BossBCore2:
+                case BossBCoreShell:
                 case BossBCoreDamaged:
-                case BossBCoreBorder1:
-                case BossBCoreBorder2:
+                case BossBCoreDamaged2:
                     this.positionX = 20;
                     this.positionY = -150;
                     break;
@@ -193,20 +193,20 @@ public class BossFormation implements Iterable<BossParts> {
                 case BossALeft2:
                 case BossARight1:
                 case BossARight2:
-                case BossABorderCore1:
-                case BossABorderCore2:
-                case BossABorderLeft1:
-                case BossABorderLeft2:
-                case BossABorderRight1:
-                case BossABorderRight2:
+                case BossACoreDamaged:
+                case BossACoreDamaged2:
+                case BossALeftDamaged:
+                case BossALeftDamaged2:
+                case BossARightDamaged:
+                case BossARightDamaged2:
                     BossWidth = 24;
                     BossHeight = 48;
                     break;
                 case BossBCore1:
                 case BossBCore2:
+                case BossBCoreShell:
                 case BossBCoreDamaged:
-                case BossBCoreBorder1:
-                case BossBCoreBorder2:
+                case BossBCoreDamaged2:
                     BossWidth = 150;
                     BossHeight = 180;
                     break;

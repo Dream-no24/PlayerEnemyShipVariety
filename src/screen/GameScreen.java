@@ -709,7 +709,7 @@ public class GameScreen extends Screen {
 					for (BossParts bossParts : this.bossFormation) {
 						if (!bossParts.isDestroyed()
 								&& checkCollision(bullet, bossParts)) {
-							if (bossParts.getSpriteType().equals(DrawManager.SpriteType.BossBCoreDamaged)) {
+							if (bossParts.getSpriteType().equals(DrawManager.SpriteType.BossBCoreShell)) {
 								isShell = true;
 								hitPositionX = bullet.getPositionX();
 								hitPositionY = bullet.getPositionY();
