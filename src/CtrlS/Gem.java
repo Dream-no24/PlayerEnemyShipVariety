@@ -1,4 +1,4 @@
-package CtrlS;
+package ctrlS;
 
 import engine.DrawManager;
 import entity.Entity;

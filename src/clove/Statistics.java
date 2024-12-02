@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 
-import CtrlS.CurrencyManager;
+import ctrlS.CurrencyManager;
 import engine.Core;
 import engine.FileManager;
 

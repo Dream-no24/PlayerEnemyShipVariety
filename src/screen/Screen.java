@@ -4,8 +4,8 @@ import java.awt.Insets;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import HUDTeam.DrawAchievementHud;
-import HUDTeam.DrawManagerImpl;
+import hudTeam.DrawAchievementHud;
+import hudTeam.DrawManagerImpl;
 import engine.Cooldown;
 import engine.Core;
 import engine.DrawManager;

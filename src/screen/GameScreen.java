@@ -8,14 +8,14 @@ import java.io.IOException;
 
 import clove.AchievementConditions;
 import clove.Statistics;
-import Enemy.*;
-import HUDTeam.DrawManagerImpl;
+import enemy.*;
+import hudTeam.DrawManagerImpl;
 import engine.*;
 import entity.*;
 // shield and heart recovery
 import inventory_develop.*;
 // Sound Operator
-import Sound_Operator.SoundManager;
+import sound_Operator.SoundManager;
 import clove.ScoreManager;    // CLOVE
 import twoplayermode.TwoPlayerMode;
 
@@ -746,7 +746,7 @@ public class GameScreen extends Screen {
 								recyclable.add(bullet);
 							}
 						}
-						// Added by team Enemy.
+						// Added by team enemy.
 						// Enemy killed by Explosive enemy gives points too
 						if (bossParts.isChainExploded()) {
 							this.score += bossParts.getPointValue();
@@ -795,7 +795,7 @@ public class GameScreen extends Screen {
 								recyclable.add(bullet);
 							}
 						}
-						// Added by team Enemy.
+						// Added by team enemy.
 						// Enemy killed by Explosive enemy gives points too
 						if (enemyShip.isChainExploded()) {
 							if (enemyShip.getColor() == Color.MAGENTA) {

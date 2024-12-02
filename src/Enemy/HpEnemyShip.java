@@ -1,4 +1,4 @@
-package Enemy;
+package enemy;
 
 import java.awt.Color;
 import entity.EnemyShip;
