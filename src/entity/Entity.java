@@ -39,11 +39,6 @@ public abstract class Entity {
 	 * @param color
 	 *            Color of the entity.
 	 */
-
-	public void setSpriteType(SpriteType spriteType) {
-		this.spriteType = spriteType;
-	}
-
 	public Entity(final int positionX, final int positionY, final int width,
 			final int height, final Color color) {
 		this.positionX = positionX;
@@ -117,6 +112,16 @@ public abstract class Entity {
 	 */
 	public final SpriteType getSpriteType() {
 		return this.spriteType;
+	}
+
+	/**
+	 * Setter for the Y axis position of the entity.
+	 *
+	 * @param spriteType
+	 *            New spriteType of the entity.
+	 */
+	public void setSpriteType(SpriteType spriteType) {
+		this.spriteType = spriteType;
 	}
 
 	/**

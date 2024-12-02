@@ -1,6 +1,6 @@
 package entity;
 
-import Sound_Operator.SoundManager;
+import sound_Operator.SoundManager;
 import engine.Cooldown;
 import engine.Core;
 import engine.DrawManager.SpriteType;
@@ -22,8 +22,11 @@ public class BossParts extends Entity {
 	private Cooldown animationCooldown;
 	/** Checks if the part of the Boss has been hit by a bullet. */
 	private Cooldown bossBActiveSkillCooldown;
-	private Cooldown bossBDeActiveSkillCooldown;
+	private Cooldown bossBActiveSkillDuration;
 	private boolean isDestroyed;
+	private boolean isCore;
+	private boolean isBoss;
+	private boolean isCoreDestroyed;
 	/** Values of the part of the Boss, in points, when destroyed. */
 	private int pointValue;
 
@@ -53,9 +56,12 @@ public class BossParts extends Entity {
 		this.maxHp = hp;
 		this.spriteType = spriteType;
 		this.animationCooldown = Core.getCooldown(500);
-		this.bossBActiveSkillCooldown = Core.getVariableCooldown(15000,10000);
-		this.bossBDeActiveSkillCooldown = Core.getCooldown(4000);
+		this.bossBActiveSkillCooldown = Core.getVariableCooldown(1000, 500);
+		this.bossBActiveSkillDuration = Core.getVariableCooldown(2000, 1000);
 		this.isDestroyed = false;
+		this.isCore = spriteType.toString().contains("Core");
+		this.isBoss = spriteType.toString().contains("Boss");
+		this.isCoreDestroyed = false;
 		this.speedMultiplier = 1.0; // default 1.0
 		this.defaultSpeedMultiplier = 1.0;
 
@@ -114,7 +120,7 @@ public class BossParts extends Entity {
 					// Check skill cooldown and change sprite type to B3 which is B3.
 					if (this.bossBActiveSkillCooldown.checkFinished()) {
 						this.spriteType = SpriteType.BossBCoreDamaged;
-						bossBDeActiveSkillCooldown.reset();
+						bossBActiveSkillDuration.reset();
 					}
 					else
 						this.spriteType = SpriteType.BossBCore2;
@@ -123,7 +129,7 @@ public class BossParts extends Entity {
 					this.spriteType = SpriteType.BossBCore1;
 					break;
 				case BossBCoreDamaged:
-					if (this.bossBDeActiveSkillCooldown.checkFinished()) {
+					if (this.bossBActiveSkillDuration.checkFinished()) {
 						this.spriteType = SpriteType.BossBCore1;
 						bossBActiveSkillCooldown.reset();
 					}
@@ -209,10 +215,11 @@ public class BossParts extends Entity {
 	public final void destroy() {
 		this.isDestroyed = true;
 		sm = SoundManager.getInstance();
-		if(this.spriteType.toString().contains("Core")){
+		if(this.isCore){
+			this.isCoreDestroyed = true;
 			sm.playES("boss_die");
 		}
-		else if(this.spriteType.toString().contains("Boss")){
+		else if(this.isBoss){
 			sm.playES("boss_part_destroy");
 		}
 		else {
@@ -230,6 +237,12 @@ public class BossParts extends Entity {
 	public final boolean isDestroyed() {
 		return this.isDestroyed;
 	}
+
+	public final boolean isCore() {return this.isCore;}
+
+	public final boolean isBoss() {return this.isBoss;}
+
+	public final boolean isCoreDestroyed(){return this.isCoreDestroyed;}
 
 	/**
 	 * Getter for the Hp of this part of the Boss.
@@ -265,31 +278,6 @@ public class BossParts extends Entity {
 
 	public void resetSpeedMultiplier() {
 		this.speedMultiplier = this.defaultSpeedMultiplier;
-	}
-
-	/**
-	 * Destroys ship, causing a chain explode.
-	 */
-	public final void chainExplode() { // Added by team Enemy
-		destroy();
-		setChainExploded(true);
-		setHp(0);
-	}
-
-	/**
-	 * Checks if the ship has been chain exploded.
-	 *
-	 * @return True if the ship has been chain exploded.
-	 */
-	public final boolean isChainExploded() {
-		return this.isChainExploded;
-	}
-
-	/**
-	 * Setter for enemy ship's isChainExploded to false.
-	 */
-	public final void setChainExploded(boolean isChainExploded) {
-		this.isChainExploded = isChainExploded;
 	}
 
 

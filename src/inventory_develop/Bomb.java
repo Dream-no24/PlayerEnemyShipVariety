@@ -1,7 +1,7 @@
 package inventory_develop;
 
-import Enemy.ItemManager;
-import Sound_Operator.SoundManager; //Sound_Operator
+import enemy.ItemManager;
+import sound_Operator.SoundManager; //Sound_Operator
 import engine.DrawManager;
 import entity.EnemyShip;
 import entity.EnemyShipFormation;
