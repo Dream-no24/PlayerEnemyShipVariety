@@ -125,18 +125,18 @@ public class DrawManager {
 		BossALeft2,
 		BossACore2,
 		BossARight2,
-		BossABorderLeft1,
-		BossABorderCore1,
-		BossABorderRight1,
-		BossABorderLeft2,
-		BossABorderCore2,
-		BossABorderRight2,
+		BossALeftDamaged,
+		BossACoreDamaged,
+		BossARightDamaged,
+		BossALeftDamaged2,
+		BossACoreDamaged2,
+		BossARightDamaged2,
 
 		BossBCore1,
 		BossBCore2,
+		BossBCoreShell,
 		BossBCoreDamaged,
-		BossBCoreBorder1,
-		BossBCoreBorder2
+		BossBCoreDamaged2
 	};
 
 	/**
@@ -190,18 +190,18 @@ public class DrawManager {
 			spriteMap.put(SpriteType.BossALeft2, new boolean[24][48]);
 			spriteMap.put(SpriteType.BossACore2, new boolean[24][48]);
 			spriteMap.put(SpriteType.BossARight2, new boolean[24][48]);
-			spriteMap.put(SpriteType.BossABorderLeft1, new boolean[24][48]);
-			spriteMap.put(SpriteType.BossABorderCore1, new boolean[24][48]);
-			spriteMap.put(SpriteType.BossABorderRight1, new boolean[24][48]);
-			spriteMap.put(SpriteType.BossABorderLeft2, new boolean[24][48]);
-			spriteMap.put(SpriteType.BossABorderCore2, new boolean[24][48]);
-			spriteMap.put(SpriteType.BossABorderRight2, new boolean[24][48]);
+			spriteMap.put(SpriteType.BossALeftDamaged, new boolean[24][48]);
+			spriteMap.put(SpriteType.BossACoreDamaged, new boolean[24][48]);
+			spriteMap.put(SpriteType.BossARightDamaged, new boolean[24][48]);
+			spriteMap.put(SpriteType.BossALeftDamaged2, new boolean[24][48]);
+			spriteMap.put(SpriteType.BossACoreDamaged2, new boolean[24][48]);
+			spriteMap.put(SpriteType.BossARightDamaged2, new boolean[24][48]);
 			// Turtle
 			spriteMap.put(SpriteType.BossBCore1, new boolean[150][180]);
 			spriteMap.put(SpriteType.BossBCore2, new boolean[150][180]);
+			spriteMap.put(SpriteType.BossBCoreShell, new boolean[150][180]);
 			spriteMap.put(SpriteType.BossBCoreDamaged, new boolean[150][180]);
-			spriteMap.put(SpriteType.BossBCoreBorder1, new boolean[150][180]);
-			spriteMap.put(SpriteType.BossBCoreBorder2, new boolean[150][180]);
+			spriteMap.put(SpriteType.BossBCoreDamaged2, new boolean[150][180]);
 
 			fileManager.loadSprite(spriteMap);
 			logger.info("Finished loading the sprites.");

@@ -119,7 +119,7 @@ public class BossParts extends Entity {
 				case BossBCore1:
 					// Check skill cooldown and change sprite type to B3 which is B3.
 					if (this.bossBActiveSkillCooldown.checkFinished()) {
-						this.spriteType = SpriteType.BossBCoreDamaged;
+						this.spriteType = SpriteType.BossBCoreShell;
 						bossBActiveSkillDuration.reset();
 					}
 					else
@@ -128,13 +128,13 @@ public class BossParts extends Entity {
 				case BossBCore2:
 					this.spriteType = SpriteType.BossBCore1;
 					break;
-				case BossBCoreDamaged:
+				case BossBCoreShell:
 					if (this.bossBActiveSkillDuration.checkFinished()) {
 						this.spriteType = SpriteType.BossBCore1;
 						bossBActiveSkillCooldown.reset();
 					}
 					else
-						this.spriteType = SpriteType.BossBCoreDamaged;
+						this.spriteType = SpriteType.BossBCoreShell;
 				default:
 					break;
 			}
