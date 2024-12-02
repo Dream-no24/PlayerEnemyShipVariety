@@ -389,7 +389,7 @@ public class BossFormation implements Iterable<BossParts> {
                 sm.playES("Enemy_Gun_Shot_1_ES");
                 bullets.add(PiercingBulletPool.getPiercingBullet( // Edited by Enemy
                         shooter.getPositionX() + shooter.width / 2,
-                        shooter.getPositionY(),
+                        shooter.getPositionY() + shooter.height,
                         BULLET_SPEED,
                         0,
                         Color.WHITE)); // Edited by Enemy
@@ -403,26 +403,14 @@ public class BossFormation implements Iterable<BossParts> {
      * @param destroyedShip
      *            Ship to be destroyed.
      */
-    public final int[] destroy(final BossParts destroyedShip, boolean isChainExploded) {
+    public final int[] destroy(final BossParts destroyedShip) {
         int count = 0;	// number of destroyed enemy
         int point = 0;  // point of destroyed enemy
         boolean isCoreDestroyed = destroyedShip.getSpriteType() == SpriteType.BossACore1 || destroyedShip.getSpriteType() == SpriteType.BossACore2;
 
-        boolean destroyAll = (destroyedShip.spriteType.equals(SpriteType.BossACore1) && destroyedShip.getColor() == Color.red) ||
-                (destroyedShip.spriteType.equals(SpriteType.BossACore2) && destroyedShip.getColor() == Color.red);
-
-        if (isChainExploded
-                && !destroyedShip.spriteType.equals(SpriteType.ExplosiveEnemyShip1)
-                && !destroyedShip.spriteType.equals(SpriteType.ExplosiveEnemyShip2)){
-            destroyedShip.chainExplode();
-        }
-
         for (List<BossParts> column : this.bossPartsFormation)
             for (int i = 0; i < column.size(); i++)
                 if (column.get(i).equals(destroyedShip)) {
-                    if(destroyAll){
-                        //destroyedShip.chainExplode(); this part can cause bug
-                    }
                     BossParts.hit(destroyedShip);
                     this.logger.info("Destroyed ship in ("
                             + this.bossPartsFormation.indexOf(column) + "," + i + ")");
@@ -430,7 +418,20 @@ public class BossFormation implements Iterable<BossParts> {
                     count += 1;
                 }
 
+        this.logger.info("DestroyedShip: " + destroyedShip);
+        this.logger.info("SpriteType: " + destroyedShip.spriteType);
+
+        if(destroyedShip.isCoreDestroyed()){
+            for (List<BossParts> column : this.bossPartsFormation)
+                for (int i = 0; i < column.size(); i++) {
+                    column.get(i).setHp(0);
+                    this.scoreManager.addScore(column.get(i).getPointValue());
+                    column.get(i).destroy();
+                }
+        }
+
         // Updates the list of ships that can shoot the player.
+
         if (this.shooters.contains(destroyedShip) && destroyedShip.isDestroyed()) {
             this.shooters.remove(destroyedShip);
             this.logger.info("Removed destroyed shooter of the Boss.");

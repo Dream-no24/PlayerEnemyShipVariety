@@ -716,7 +716,7 @@ public class GameScreen extends Screen {
 								hitPositionY = bullet.getPositionY();
 							}
 							else {
-								int CntAndPnt[] = this.bossFormation.destroy(bossParts, false);    // team Inventory
+								int CntAndPnt[] = this.bossFormation.destroy(bossParts);    // team Inventory
 								this.shipsDestroyed += CntAndPnt[0];
 								int feverScore = bossParts.getPointValue();
 
@@ -750,13 +750,6 @@ public class GameScreen extends Screen {
 								bullet.setCheckCount(true);
 								recyclable.add(bullet);
 							}
-						}
-						// Added by team enemy.
-						// Enemy killed by Explosive enemy gives points too
-						if (bossParts.isChainExploded()) {
-							this.score += bossParts.getPointValue();
-							this.shipsDestroyed++;
-							bossParts.setChainExploded(false); // resets enemy's chain explosion state.
 						}
 					}
 
