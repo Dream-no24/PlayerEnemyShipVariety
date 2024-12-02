@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import engine.Cooldown;
 import engine.Core;
 // Sound Operator
-import Sound_Operator.SoundManager;
+import sound_Operator.SoundManager;
 import engine.Score;
 import inventory_develop.ShipStatus;
 

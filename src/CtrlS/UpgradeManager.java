@@ -1,4 +1,4 @@
-package CtrlS;
+package ctrlS;
 
 import engine.Core;
 import engine.FileManager;

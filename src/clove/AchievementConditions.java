@@ -7,7 +7,7 @@ import engine.Core;
 import engine.DrawManager;
 import engine.GameState;
 import clove.Statistics;
-import HUDTeam.DrawAchievementHud;
+import hudTeam.DrawAchievementHud;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

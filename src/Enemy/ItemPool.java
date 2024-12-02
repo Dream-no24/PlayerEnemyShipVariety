@@ -1,4 +1,4 @@
-package Enemy;
+package enemy;
 
 import java.util.HashSet;
 import java.util.Set;

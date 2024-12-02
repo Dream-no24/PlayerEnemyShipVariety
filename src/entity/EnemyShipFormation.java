@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.Timer;
 
-import Enemy.*;
-import Sound_Operator.SoundManager;
+import enemy.*;
+import sound_Operator.SoundManager;
 import clove.ScoreManager;
 import inventory_develop.Bomb;
 import inventory_develop.SpeedItem;
@@ -21,7 +21,7 @@ import engine.DrawManager;
 import engine.DrawManager.SpriteType;
 import engine.GameSettings;
 import static java.lang.Math.*;
-import Enemy.PiercingBulletPool;
+import enemy.PiercingBulletPool;
 //Sound_Operator
 
 

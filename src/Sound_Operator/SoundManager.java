@@ -1,4 +1,4 @@
-package Sound_Operator;
+package sound_Operator;
 
 import engine.Core;
 
