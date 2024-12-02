@@ -391,7 +391,8 @@ public class BossFormation implements Iterable<BossParts> {
                         shooter.getPositionX() + shooter.width / 2,
                         shooter.getPositionY(),
                         BULLET_SPEED,
-                        0)); // Edited by Enemy
+                        0,
+                        Color.WHITE)); // Edited by Enemy
             }
         }
     }
@@ -430,10 +431,9 @@ public class BossFormation implements Iterable<BossParts> {
                 }
 
         // Updates the list of ships that can shoot the player.
-        if ((this.shooters.contains(destroyedShip) && !destroyedShip.spriteType.equals(SpriteType.BossACore1)) ||
-                (this.shooters.contains(destroyedShip) && !destroyedShip.spriteType.equals(SpriteType.BossACore2))) {
+        if (this.shooters.contains(destroyedShip) && destroyedShip.isDestroyed()) {
             this.shooters.remove(destroyedShip);
-            this.logger.info("Removed destroyed Arm from Boss.");
+            this.logger.info("Removed destroyed shooter of the Boss.");
         }
 
         this.shipCount -= count;
@@ -476,16 +476,25 @@ public class BossFormation implements Iterable<BossParts> {
      *         bullet to be reflected. But it is an eyewash.
      *
      */
-    public void reflect(final Set<PiercingBullet> bullets) {
+    public void reflect(final Set<PiercingBullet> bullets, int hitPositionX, int hitPositionY) {
         if (!shooters.isEmpty()) {
             BossParts shooter = this.shooters.get(this.shooters.size() / 2);
 //                sm = SoundManager.getInstance();
 //                sm.playES("Enemy_Gun_Shot_1_ES");
-            bullets.add(PiercingBulletPool.getPiercingBullet(
-                    shooter.getPositionX() + shooter.width / 2,
-                    shooter.getPositionY(),
-                    BULLET_SPEED,
-                    0));
+//            bullets.add(PiercingBulletPool.getPiercingBullet(
+//                    shooter.getPositionX() + shooter.width / 2,
+//                    shooter.getPositionY(),
+//                    BULLET_SPEED,
+//                    0,
+//                    Color.RED));
+            Set<PiercingBullet> newBullets = new NumberOfBullet().addBullet(
+                    hitPositionX,
+                    hitPositionY,
+                    BULLET_SPEED + 2,
+                    false,
+                    Color.RED
+                    );
+            bullets.addAll(newBullets);
         }
     }
 }

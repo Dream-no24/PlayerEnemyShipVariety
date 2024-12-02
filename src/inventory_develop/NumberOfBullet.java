@@ -4,6 +4,7 @@ import enemy.PiercingBullet;
 import enemy.PiercingBulletPool;
 import engine.Core;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,26 +42,26 @@ public class NumberOfBullet{
      *
      * @return
      */
-    public Set<PiercingBullet> addBullet(int positionX, int positionY, int speed, boolean canShootBomb) {
+    public Set<PiercingBullet> addBullet(int positionX, int positionY, int speed, boolean canShootBomb, Color color) {
         Set<PiercingBullet> bullets = new HashSet<>();
 
         if (canShootBomb) {
-            bullets.add(PiercingBulletPool.getPiercingBullet(positionX, positionY, speed, 1));
+            bullets.add(PiercingBulletPool.getPiercingBullet(positionX, positionY, speed, 1, color));
             return bullets;
         }
 
         switch (bulletLevel) {
             case 1:
-                bullets.add(PiercingBulletPool.getPiercingBullet(positionX, positionY, speed, piercingbulletLevel));
+                bullets.add(PiercingBulletPool.getPiercingBullet(positionX, positionY, speed, piercingbulletLevel, color));
                 break;
             case 2:
-                bullets.add(PiercingBulletPool.getPiercingBullet(positionX - OFFSET_X_TWOBULLETS + 5, positionY, speed, piercingbulletLevel));
-                bullets.add(PiercingBulletPool.getPiercingBullet(positionX + OFFSET_X_TWOBULLETS - 5, positionY, speed, piercingbulletLevel));
+                bullets.add(PiercingBulletPool.getPiercingBullet(positionX - OFFSET_X_TWOBULLETS + 5, positionY, speed, piercingbulletLevel, color));
+                bullets.add(PiercingBulletPool.getPiercingBullet(positionX + OFFSET_X_TWOBULLETS - 5, positionY, speed, piercingbulletLevel, color));
                 break;
             case 3:
-                bullets.add(PiercingBulletPool.getPiercingBullet(positionX + OFFSET_X_THREEBULLETS, positionY, speed, piercingbulletLevel));
-                bullets.add(PiercingBulletPool.getPiercingBullet(positionX, positionY, speed,piercingbulletLevel));
-                bullets.add(PiercingBulletPool.getPiercingBullet(positionX - OFFSET_X_THREEBULLETS, positionY, speed, piercingbulletLevel));
+                bullets.add(PiercingBulletPool.getPiercingBullet(positionX, positionY, speed, piercingbulletLevel, color));
+                bullets.add(PiercingBulletPool.getPiercingBullet(positionX + OFFSET_X_THREEBULLETS, positionY, speed, piercingbulletLevel, color));
+                bullets.add(PiercingBulletPool.getPiercingBullet(positionX - OFFSET_X_THREEBULLETS, positionY, speed, piercingbulletLevel, color));
                 break;
         }
 

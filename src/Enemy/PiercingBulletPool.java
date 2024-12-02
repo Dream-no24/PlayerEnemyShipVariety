@@ -2,6 +2,7 @@ package enemy;
 
 import entity.Bullet;
 
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ public final class PiercingBulletPool {
      * @return A PiercingBullet object, either from the pool or newly created.
      */
     public static PiercingBullet getPiercingBullet(final int positionX,
-                                                   final int positionY, final int speed, int piercingCount) {
+                                                   final int positionY, final int speed, int piercingCount, final Color color) {
         PiercingBullet bullet;
         if (!pool.isEmpty()) {
             bullet = pool.iterator().next();
@@ -44,8 +45,9 @@ public final class PiercingBulletPool {
             bullet.setSpeed(speed);
             bullet.setPiercingCount(piercingCount);  // Reset piercing count when recycling
             bullet.setSprite(); // Prevents destroyed bullets from being reused incorrectly
+            bullet.setColor(color);
         } else {
-            bullet = new PiercingBullet(positionX, positionY, speed, piercingCount);
+            bullet = new PiercingBullet(positionX, positionY, speed, piercingCount, Color.WHITE);
             bullet.setPositionX(positionX - bullet.getWidth() / 2);
         }
         return bullet;

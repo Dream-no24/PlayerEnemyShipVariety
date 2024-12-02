@@ -437,7 +437,8 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 						shooter.getPositionX() + shooter.width / 2,
 						shooter.getPositionY(),
 						BULLET_SPEED,
-						0)); // Edited by Enemy
+						0,
+						Color.WHITE)); // Edited by Enemy
 			}
 		}
 	}
@@ -668,7 +669,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 		int point = 0;
 		int mob = 0;
 
-		Bullet bullet = new Bullet(0,0,-1);
+		Bullet bullet = new Bullet(0,0,-1, Color.WHITE);
 
 		do{
 
