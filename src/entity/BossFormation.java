@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import inventory_develop.NumberOfBullet;
 import sound_Operator.SoundManager;
 import screen.Screen;
 import engine.Cooldown;
