@@ -1,4 +1,4 @@
-package Enemy;
+package enemy;
 
 import engine.Core;
 import entity.BossParts;
@@ -20,10 +20,10 @@ import inventory_develop.ItemBarrierAndHeart;
 import inventory_develop.NumberOfBullet;
 import inventory_develop.SpeedItem;
 
-import CtrlS.CurrencyManager;
+import ctrlS.CurrencyManager;
 
 // Sound Operator
-import Sound_Operator.SoundManager;
+import sound_Operator.SoundManager;
 
 
 public class ItemManager {

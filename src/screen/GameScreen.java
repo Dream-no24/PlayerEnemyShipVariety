@@ -6,16 +6,17 @@ import java.util.*;
 
 import java.io.IOException;
 
+import CtrlS.UpgradeManager;
 import clove.AchievementConditions;
 import clove.Statistics;
-import Enemy.*;
-import HUDTeam.DrawManagerImpl;
+import enemy.*;
+import hudTeam.DrawManagerImpl;
 import engine.*;
 import entity.*;
 // shield and heart recovery
 import inventory_develop.*;
 // Sound Operator
-import Sound_Operator.SoundManager;
+import sound_Operator.SoundManager;
 import clove.ScoreManager;    // CLOVE
 import twoplayermode.TwoPlayerMode;
 
@@ -683,6 +684,8 @@ public class GameScreen extends Screen {
 	public void manageCollisions_add_item() {
 		Set<PiercingBullet> recyclable = new HashSet<PiercingBullet>();
 		boolean isShell = false;
+		int hitPositionX = 0;
+		int hitPositionY = 0;
 		for (PiercingBullet bullet : this.bullets)
 			if (bullet.getSpeed() > 0) {
 				if (checkCollision(bullet, this.ship) && !this.levelFinished) {
@@ -709,6 +712,8 @@ public class GameScreen extends Screen {
 								&& checkCollision(bullet, bossParts)) {
 							if (bossParts.getSpriteType().equals(DrawManager.SpriteType.BossBCoreDamaged)) {
 								isShell = true;
+								hitPositionX = bullet.getPositionX();
+								hitPositionY = bullet.getPositionY();
 							}
 							else {
 								int CntAndPnt[] = this.bossFormation.destroy(bossParts);    // team Inventory
@@ -788,7 +793,7 @@ public class GameScreen extends Screen {
 								recyclable.add(bullet);
 							}
 						}
-						// Added by team Enemy.
+						// Added by team enemy.
 						// Enemy killed by Explosive enemy gives points too
 						if (enemyShip.isChainExploded()) {
 							if (enemyShip.getColor() == Color.MAGENTA) {
@@ -879,8 +884,7 @@ public class GameScreen extends Screen {
 			}
 		}
 		itemManager.removeAllReItems();
-
-		if (isShell) bossFormation.reflect(this.bullets);
+		if (isShell) bossFormation.reflect(this.bullets, hitPositionX, hitPositionY);
 	}
 
 

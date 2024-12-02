@@ -1,7 +1,7 @@
-package HUDTeam;
+package hudTeam;
 
 // Sound Operator
-import Sound_Operator.SoundManager;
+import sound_Operator.SoundManager;
 
 public class DrawAchievementHud {
     // Sound Operator

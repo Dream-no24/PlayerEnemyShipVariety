@@ -1,6 +1,6 @@
 package inventory_develop;
 
-import Sound_Operator.SoundManager;
+import sound_Operator.SoundManager;
 import engine.Core;
 
 import java.util.logging.Logger;

@@ -1,4 +1,4 @@
-package Enemy;
+package enemy;
 
 import engine.Core;
 import java.io.IOException;

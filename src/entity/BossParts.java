@@ -1,6 +1,6 @@
 package entity;
 
-import Sound_Operator.SoundManager;
+import sound_Operator.SoundManager;
 import engine.Cooldown;
 import engine.Core;
 import engine.DrawManager.SpriteType;
@@ -22,7 +22,7 @@ public class BossParts extends Entity {
 	private Cooldown animationCooldown;
 	/** Checks if the part of the Boss has been hit by a bullet. */
 	private Cooldown bossBActiveSkillCooldown;
-	private Cooldown bossBDeActiveSkillCooldown;
+	private Cooldown bossBActiveSkillDuration;
 	private boolean isDestroyed;
 	private boolean isCore;
 	private boolean isBoss;
@@ -56,8 +56,8 @@ public class BossParts extends Entity {
 		this.maxHp = hp;
 		this.spriteType = spriteType;
 		this.animationCooldown = Core.getCooldown(500);
-		this.bossBActiveSkillCooldown = Core.getVariableCooldown(15000,10000);
-		this.bossBDeActiveSkillCooldown = Core.getCooldown(4000);
+		this.bossBActiveSkillCooldown = Core.getVariableCooldown(1000, 500);
+		this.bossBActiveSkillDuration = Core.getVariableCooldown(2000, 1000);
 		this.isDestroyed = false;
 		this.isCore = spriteType.toString().contains("Core");
 		this.isBoss = spriteType.toString().contains("Boss");
@@ -120,7 +120,7 @@ public class BossParts extends Entity {
 					// Check skill cooldown and change sprite type to B3 which is B3.
 					if (this.bossBActiveSkillCooldown.checkFinished()) {
 						this.spriteType = SpriteType.BossBCoreDamaged;
-						bossBDeActiveSkillCooldown.reset();
+						bossBActiveSkillDuration.reset();
 					}
 					else
 						this.spriteType = SpriteType.BossBCore2;
@@ -129,7 +129,7 @@ public class BossParts extends Entity {
 					this.spriteType = SpriteType.BossBCore1;
 					break;
 				case BossBCoreDamaged:
-					if (this.bossBDeActiveSkillCooldown.checkFinished()) {
+					if (this.bossBActiveSkillDuration.checkFinished()) {
 						this.spriteType = SpriteType.BossBCore1;
 						bossBActiveSkillCooldown.reset();
 					}

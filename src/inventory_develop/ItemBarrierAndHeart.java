@@ -3,7 +3,7 @@ import engine.Core;
 import engine.DrawManager;
 import screen.GameScreen;
 import entity.Ship;
-import Enemy.PlayerGrowth;
+import enemy.PlayerGrowth;
 
 import java.util.logging.Logger;
 

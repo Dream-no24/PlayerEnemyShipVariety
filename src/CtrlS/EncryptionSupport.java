@@ -1,4 +1,4 @@
-package CtrlS;
+package ctrlS;
 
 /**
  * Class that Support encryption and decryption.

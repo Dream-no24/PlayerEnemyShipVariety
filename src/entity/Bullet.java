@@ -41,8 +41,8 @@ public class Bullet extends Entity {
 	 *            Speed of the bullet, positive or negative depending on
 	 *            direction - positive is down.
 	 */
-	public Bullet(final int positionX, final int positionY, final int speed) {
-		super(positionX, positionY, 3 * 2, 5 * 2, Color.WHITE);
+	public Bullet(final int positionX, final int positionY, final int speed, final Color color) {
+		super(positionX, positionY, 3 * 2, 5 * 2, color);
 		// CtrlS
 		this.checkCount = true;
 		// CtrlS
