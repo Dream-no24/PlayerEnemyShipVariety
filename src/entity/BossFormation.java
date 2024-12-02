@@ -40,9 +40,9 @@ public class BossFormation implements Iterable<BossParts> {
     /** Proportion of B-type ships. */
     private static final double PROPORTION_B = 0.4;
     /** Lateral speed of the formation. */
-    private static final int X_SPEED = 8;
+    private static final int X_SPEED = 16;
     /** Downwards speed of the formation. */
-    private static final int Y_SPEED = 4;
+    private static final int Y_SPEED = 20;
     /** Speed of the bullets shot by the members. */
     private static final int BULLET_SPEED = 4;
     /** Proportion of differences between shooting times. */
@@ -177,7 +177,7 @@ public class BossFormation implements Iterable<BossParts> {
                 case BossBCoreDamaged:
                 case BossBCoreDamaged2:
                     this.positionX = 20;
-                    this.positionY = -150;
+                    this.positionY = -160;
                     break;
                 default:
                     break;
