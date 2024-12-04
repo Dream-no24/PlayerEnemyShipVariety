@@ -26,7 +26,7 @@ public class BossVariety {
      * @param healthPerPart Health value assigned to each boss part.
      */
 
-    private BossVariety(String name, List<SpriteType> spriteTypes, int healthPerPart, int separationDistance) {
+    public BossVariety(String name, List<SpriteType> spriteTypes, int healthPerPart, int separationDistance) {
         this.name = name;
         this.spriteTypes = spriteTypes;
         this.healthPerPart = healthPerPart;
