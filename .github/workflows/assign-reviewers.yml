@@ -13,7 +13,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y jq gh
-
+          
       - name: Select Random Reviewers
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,6 +42,7 @@ jobs:
           # PR 작성자를 제외한 리뷰어 필터링
           FILTERED_REVIEWERS=$(echo "$REVIEWER_DATA" | jq -c --arg PR_AUTHOR "$PR_AUTHOR" \
             '.reviewers | map(select(.github != $PR_AUTHOR))')
+
           echo "필터링된 리뷰어: $FILTERED_REVIEWERS"
 
           # PR 제목에서 '#M' 패턴 찾기
@@ -61,7 +62,8 @@ jobs:
 
           # 무작위 리뷰어 선택
           SELECTED_REVIEWERS=$(echo "$FILTERED_REVIEWERS" | jq -c --argjson NUM_REVIEWERS "$NUM_REVIEWERS" \
-            'sort_by(.github) | .[:$NUM_REVIEWERS]')
+            'shuf | .[:$NUM_REVIEWERS]')
+
           echo "선택된 리뷰어: $SELECTED_REVIEWERS"
 
           # GitHub 리뷰어 JSON 생성
