@@ -20,7 +20,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.11.3")
     testImplementation("org.mockito:mockito-core:5.3.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.3.0")
-    testImplementation("org.mockito:mockito-inline:5.3.0")
+    testImplementation("org.mockito:mockito-inline:4.2.0")
     testImplementation("org.assertj:assertj-core:3.23.1")
 }
 
