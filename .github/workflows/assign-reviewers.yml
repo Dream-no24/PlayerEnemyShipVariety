@@ -61,9 +61,7 @@ jobs:
           fi
 
           # 무작위 리뷰어 선택
-          SELECTED_REVIEWERS=$(echo "$FILTERED_REVIEWERS" | jq -c --argjson NUM_REVIEWERS "$NUM_REVIEWERS" \
-            'shuf | .[:$NUM_REVIEWERS]')
-
+          SELECTED_REVIEWERS=$(echo "$FILTERED_REVIEWERS" | jq -c '.[]' | shuf -n "$NUM_REVIEWERS" | jq -s .)
           echo "선택된 리뷰어: $SELECTED_REVIEWERS"
 
           # GitHub 리뷰어 JSON 생성
