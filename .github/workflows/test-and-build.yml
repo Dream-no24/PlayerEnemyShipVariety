@@ -23,7 +23,6 @@ jobs:
 
       - name: Run Gradle build
         run: ./gradlew clean build --refresh-dependencies
-        continue-on-error: true 
 
       - name: Publish test results to PR comments
         uses: EnricoMi/publish-unit-test-result-action@v2
