@@ -20,7 +20,6 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.11.3")
     testImplementation("org.mockito:mockito-core:5.3.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.3.0")
-    testImplementation("org.mockito:mockito-inline:5.2.0")
     testImplementation("org.assertj:assertj-core:3.23.1")
 }
 
@@ -41,7 +40,7 @@ sourceSets {
     main {
         java {
             setSrcDirs(listOf("src")) // 모든 실행 소스를 포함
-            exclude("**/Test/**")    // 테스트 디렉토리는 제외
+            exclude("**/test/**")    // 테스트 디렉토리는 제외
         }
         resources {
             setSrcDirs(listOf("res")) // 리소스 디렉토리 설정
@@ -49,7 +48,7 @@ sourceSets {
     }
     test {
         java {
-            setSrcDirs(listOf("src/Test")) // 테스트 코드 경로 설정
+            setSrcDirs(listOf("src/test")) // 테스트 코드 경로 설정
         }
     }
 }
