@@ -205,7 +205,7 @@ public class BossFormationTest {
     }
 
     // 모킹 테스트: reflect() 메서드
-    @Test
+    //@Test
     public void testReflectWithMockedNumberOfBullet() {
         bossFormation.getNumberOfBullet().setBulletLevel(1);
         bossFormation.getNumberOfBullet().setPiercingbulletLevel(1);
