@@ -26,7 +26,7 @@ jobs:
 
 publish-results:
   runs-on: ubuntu-latest
-    needs: run-tests
+  needs: run-tests
 
     steps:
       - name: Checkout repository
