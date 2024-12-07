@@ -32,7 +32,7 @@ jobs:
           C:\Scream\Install\helpers\devcon install Scream.inf *Scream
 
       - name: Run Gradle build
-        run: ./gradlew build --scan
+        run: ./gradlew build
 
       - name: Save test results
         run: |
