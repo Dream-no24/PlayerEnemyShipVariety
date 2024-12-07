@@ -205,37 +205,37 @@ public class BossFormationTest {
     }
 
     // 모킹 테스트: reflect() 메서드
-//    @Test
-//    public void testReflectWithMockedNumberOfBullet() {
-//        bossFormation.getNumberOfBullet().setBulletLevel(1);
-//        bossFormation.getNumberOfBullet().setPiercingbulletLevel(1);
-//        Set<PiercingBullet> bullets = bossFormation.getNumberOfBullet().addBullet(
-//                1,
-//                1,
-//                10,
-//                false,
-//                Color.YELLOW
-//        );
-//        int prev = bullets.size();
-//        boolean hasRed = false;
-//
-//        bossFormation.reflect(bullets, 100, 100);
-//
-//        assertThat(bullets).isNotEmpty();
-//        assertThat(prev +  bossFormation.getNumberOfBullet().getBulletLevel()).isEqualTo(bullets.size());
-//
-//        for (PiercingBullet bullet : bullets) {
-//            hasRed = (bullet.getColor().equals(Color.RED));
-//            System.out.println("X : " + bullet.getPositionX());
-//            System.out.println("Y : " + bullet.getPositionY());
-//            System.out.println("Speed : " + bullet.getSpeed());
-//            System.out.println("Color : " + bullet.getColor());
-//            if (hasRed) {
-//                break;
-//            }
-//        }
-//        assertThat(hasRed).isTrue();
-//    }
+    @Test
+    public void testReflectWithMockedNumberOfBullet() {
+        bossFormation.getNumberOfBullet().setBulletLevel(1);
+        bossFormation.getNumberOfBullet().setPiercingbulletLevel(1);
+        Set<PiercingBullet> bullets = bossFormation.getNumberOfBullet().addBullet(
+                1,
+                1,
+                10,
+                false,
+                Color.YELLOW
+        );
+        int prev = bullets.size();
+        boolean hasRed = false;
+
+        bossFormation.reflect(bullets, 100, 100);
+
+        assertThat(bullets).isNotEmpty();
+        assertThat(prev +  bossFormation.getNumberOfBullet().getBulletLevel()).isEqualTo(bullets.size());
+
+        for (PiercingBullet bullet : bullets) {
+            hasRed = (bullet.getColor().equals(Color.RED));
+            System.out.println("X : " + bullet.getPositionX());
+            System.out.println("Y : " + bullet.getPositionY());
+            System.out.println("Speed : " + bullet.getSpeed());
+            System.out.println("Color : " + bullet.getColor());
+            if (hasRed) {
+                break;
+            }
+        }
+        assertThat(hasRed).isTrue();
+    }
 
     // 모킹 테스트: iterator() 메서드
     @Test
