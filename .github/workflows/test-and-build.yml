@@ -38,7 +38,7 @@ jobs:
         run: ./gradlew build --scan
 
       - name: Publish test results to PR comments
-        uses: EnricoMi/publish-unit-test-result-action@v2
+        uses: EnricoMi/publish-unit-test-result-action/windows@v2
         if: always()
         with:
           files: '**/build/test-results/test/TEST-*.xml'
