@@ -24,14 +24,14 @@ jobs:
       - name: Run Gradle build
         run: ./gradlew build --scan
 
-publish-results:
-  runs-on: ubuntu-latest
-  needs: run-tests
+  publish-results:
+    runs-on: ubuntu-latest
+    needs: run-tests
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
+
       - name: Publish test results to PR comments
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
