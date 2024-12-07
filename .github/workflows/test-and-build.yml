@@ -22,14 +22,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Gradle build
-        run: ./gradlew build
-
-  publish-results:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+        run: ./gradlew build --scan
 
       - name: Publish test results to PR comments
         uses: EnricoMi/publish-unit-test-result-action@v2
