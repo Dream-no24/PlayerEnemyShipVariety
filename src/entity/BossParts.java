@@ -162,7 +162,7 @@ public class BossParts extends Entity {
 			green = 255 - (int) (127 * ((ratio - 2)));
 		}else if (hp >= (double) maxHp / 4) {
 			green = 255;
-			red = 255 -(int) (255 * (ratio -1));
+			red = 255 -(int) (255 * (ratio - 1));
 		}else {
 			green = (int) (255 * ratio);
 			red = 255;
@@ -271,14 +271,4 @@ public class BossParts extends Entity {
 	public double getSpeedMultiplier() {
 		return this.speedMultiplier;
 	}
-
-	public void setSpeedMultiplier(double speedMultiplier) {
-		this.speedMultiplier = speedMultiplier;
-	}
-
-	public void resetSpeedMultiplier() {
-		this.speedMultiplier = this.defaultSpeedMultiplier;
-	}
-
-
 }

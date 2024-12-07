@@ -107,9 +107,10 @@ public class BossFormation implements Iterable<BossParts> {
     /** Number of not destroyed ships. */
     private int shipCount;
     private static SoundManager sm;
+    private NumberOfBullet numberOfBullet;
 
     /** Directions the formation can move. */
-    private enum Direction {
+    public enum Direction {
         /** Movement to the right side of the screen. */
         RIGHT,
         /** Movement to the left side of the screen. */
@@ -118,13 +119,6 @@ public class BossFormation implements Iterable<BossParts> {
         DOWN
     };
 
-
-    public void setScoreManager (ScoreManager scoreManager){
-        this.scoreManager = scoreManager;
-    }
-    public void setItemManager (ItemManager itemManager){//add by team Enemy
-        this.itemManager = itemManager;
-    }
 
     /**
      * Constructor, sets the initial conditions.
@@ -136,6 +130,8 @@ public class BossFormation implements Iterable<BossParts> {
     public BossFormation(final GameSettings gameSettings, BossVariety bossVariety) {
         this.drawManager = Core.getDrawManager();
         this.logger = Core.getLogger();
+
+        numberOfBullet = new NumberOfBullet();
 
         this.bossPartsFormation = new ArrayList<List<BossParts>>();
         this.shooters = new ArrayList<BossParts>();
@@ -259,7 +255,6 @@ public class BossFormation implements Iterable<BossParts> {
                 drawManager.drawEntity(bossParts, bossParts.getPositionX(),
                         bossParts.getPositionY());
     }
-
     /**
      * Updates the position of the ships.
      */
@@ -328,7 +323,6 @@ public class BossFormation implements Iterable<BossParts> {
 
             positionX += movementX;
             positionY += movementY;
-
             // Cleans explosions.
             List<BossParts> destroyed;
             for (List<BossParts> column : this.bossPartsFormation) {
@@ -502,16 +496,7 @@ public class BossFormation implements Iterable<BossParts> {
      */
     public void reflect(final Set<PiercingBullet> bullets, int hitPositionX, int hitPositionY) {
         if (!shooters.isEmpty()) {
-            BossParts shooter = this.shooters.get(this.shooters.size() / 2);
-//                sm = SoundManager.getInstance();
-//                sm.playES("Enemy_Gun_Shot_1_ES");
-//            bullets.add(PiercingBulletPool.getPiercingBullet(
-//                    shooter.getPositionX() + shooter.width / 2,
-//                    shooter.getPositionY(),
-//                    BULLET_SPEED,
-//                    0,
-//                    Color.RED));
-            Set<PiercingBullet> newBullets = new NumberOfBullet().addBullet(
+            Set<PiercingBullet> newBullets = numberOfBullet.addBullet(
                     hitPositionX,
                     hitPositionY,
                     BULLET_SPEED + 2,
@@ -520,5 +505,103 @@ public class BossFormation implements Iterable<BossParts> {
                     );
             bullets.addAll(newBullets);
         }
+    }
+
+
+    public ScoreManager getScoreManager (){
+        return this.scoreManager;
+    }
+    public ItemManager getItemManager (){//add by team Enemy
+        return this.itemManager;
+    }
+    public void setScoreManager (ScoreManager scoreManager){
+        this.scoreManager = scoreManager;
+    }
+    public void setItemManager (ItemManager itemManager){//add by team Enemy
+        this.itemManager = itemManager;
+    }
+
+    public List<List<BossParts>> getBossPartsFormation() {
+        return this.bossPartsFormation;
+    }
+    public void setBossPartsFormation(List<List<BossParts>> bossPartsFormation) {
+        this.bossPartsFormation = bossPartsFormation;
+    }
+
+    public int getMovementSpeed() {
+        return movementSpeed;
+    }
+    public void setMovementSpeed(int movementSpeed) {
+        this.movementSpeed = movementSpeed;
+    }
+
+    public Screen getScreen() {
+        return screen;
+    }
+    public void setScreen(Screen screen) {
+        this.screen = screen;
+    }
+
+    public Cooldown getShootingCooldown() {
+        return shootingCooldown;
+    }
+    public void setShootingCooldown(Cooldown shootingCooldown) {
+        this.shootingCooldown = shootingCooldown;
+    }
+
+    public int getPositionX() {
+        return positionX;
+    }
+    public void setPositionX(int positionX) {
+        this.positionX = positionX;
+    }
+
+    public int getPositionY() {
+        return positionY;
+    }
+    public void setPositionY(int positionY) {
+        this.positionY = positionY;
+    }
+
+    public Direction getCurrentDirection() {
+        return currentDirection;
+    }
+    public void setCurrentDirection(Direction currentDirection) {
+        this.currentDirection = currentDirection;
+    }
+
+    public Direction getPreviousDirection() {
+        return previousDirection;
+    }
+    public void setPreviousDirection(Direction previousDirection) {
+        this.previousDirection = previousDirection;
+    }
+
+    public int getMovementInterval() {
+        return movementInterval;
+    }
+    public void setMovementInterval(int movementInterval) {
+        this.movementInterval = movementInterval;
+    }
+
+    public List<BossParts> getShooters() {
+        return shooters;
+    }
+    public void setShooters(List<BossParts> shooters) {
+        this.shooters = shooters;
+    }
+
+    public NumberOfBullet getNumberOfBullet() {
+        return numberOfBullet;
+    }
+    public void setNumberOfBullet(NumberOfBullet numberOfBullet) {
+        this.numberOfBullet = numberOfBullet;
+    }
+
+    public int getShipCount() {
+        return shipCount;
+    }
+    public void setShipCount(int shipCount) {
+        this.shipCount = shipCount;
     }
 }

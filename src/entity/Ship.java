@@ -1,7 +1,6 @@
 package entity;
 
 import java.awt.Color;
-import java.io.File;
 import java.util.Set;
 
 import enemy.PiercingBullet;
@@ -9,7 +8,6 @@ import engine.Cooldown;
 import engine.Core;
 import engine.DrawManager.SpriteType;
 import inventory_develop.Bomb;
-import enemy.PiercingBulletPool;
 // Sound Operator
 import sound_Operator.SoundManager;
 // Import PlayerGrowth class

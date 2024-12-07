@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * TwoBulletPool extends BulletPool to manage firing two bullets at once.
  */
-public class NumberOfBullet{
+public class NumberOfBullet {
 
     /** Offset to ensure bullets don't overlap when fired together. */
     private static final int OFFSET_X_TWOBULLETS = 15;
@@ -77,5 +77,19 @@ public class NumberOfBullet{
 
     public void ResetPierceLevel(){
         piercingbulletLevel = 1;
+    }
+
+    public int getBulletLevel() {
+        return bulletLevel;
+    }
+    public void setBulletLevel(int bulletLevel) {
+        NumberOfBullet.bulletLevel = bulletLevel;
+    }
+
+    public int getPiercingbulletLevel() {
+        return piercingbulletLevel;
+    }
+    public void setPiercingbulletLevel(int piercingbulletLevel) {
+        NumberOfBullet.piercingbulletLevel = piercingbulletLevel;
     }
 }
