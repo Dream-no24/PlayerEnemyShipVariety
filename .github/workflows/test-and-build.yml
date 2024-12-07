@@ -22,31 +22,17 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Gradle build
-        run: ./gradlew build
-
-      - name: Save test results
-        run: mkdir -p $GITHUB_WORKSPACE/test-results && cp -r build/test-results/test $GITHUB_WORKSPACE/test-results
-
-  publish-results:
-    runs-on: ubuntu-latest
-    needs: run-tests
-    if: always()
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        
-      - name: Upload test results
-        run: cp -r $GITHUB_WORKSPACE/test-results ./test-results
+        run: ./gradlew build --scan
 
       - name: Publish test results to PR comments
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          files: './test-results/TEST-*.xml'
+          files: '**/build/test-results/test/TEST-*.xml'
 
       - name: Add comments to failed lines on PR
         uses: mikepenz/action-junit-report@v3
         if: always()
         with:
-          report_paths: './test-results/TEST-*.xml'
+          report_paths: '**/build/test-results/test/TEST-*.xml'
           token: ${{ secrets.GITHUB_TOKEN }}
