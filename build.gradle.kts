@@ -32,8 +32,16 @@ java {
 }
 
 application {
-    // Define the main class for the application.
-    mainClass = "engine.Core"
+    mainClass.set("engine.Core") // 메인 클래스 경로 설정
+}
+
+tasks.jar {
+    manifest {
+        attributes(
+            "Main-Class" to "engine.Core" // 실행 진입점
+        )
+    }
+
 }
 
 sourceSets {
